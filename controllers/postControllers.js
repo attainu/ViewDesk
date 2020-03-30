@@ -51,7 +51,7 @@ controllers.login = (req, res) => {
                             role: user.role,
                             branch: user.branch
                         }
-                        
+
                         // generating token
                         const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' })
 
@@ -217,68 +217,12 @@ controllers.markAttendance = (req, res) => {
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.resetPassword = (req, res) => {
 
-    const userPwd = req.body.password
-    const newPassword = req.body.newPassword
-
-    const data = reqTokenDecoder()
-
-    /**-------------------------------------------------------- */
-    /**
-     * modifying codes to fix bug
-     */
     
-
-    /**---------------------------------------------------------- */
-
-    /**
-     * bug :- updating new password without verifying the old one
-     */
-    // updating password in DB
-    User.findOneAndUpdate(
-        { email: userEmail }, //find user
-        { $set: { password: newPassword } }, // set password
-        { new: true })
-        .then((doc) => {
-            if (doc)
-                res.json({ status: true, message: 'Password updated' })
-            else
-                res.json({ status: false, message: 'User don\'t exist' })
-        })
-        .catch((err) => res.json({ status: false, message: 'User don\'t exist', error: err }))
 }
 
 controllers.forgotPassword = (req, res) => {
 
-    /**
-     * need to integrate with Google console
-     * to make it work properly
-     */
-    const userEmail = req.body.email
-
-    User.findOne({ email: userEmail })
-        .then(user => {
-            if (user) {
-
-                // generating token
-                const token = jwt.sign()
-
-                // setup mail confugration
-                const mailConfugration = {
-                    from: 'allspark.viewDesk@gmail.com',
-                    to: userEmail,
-                    subject: 'Reset password',
-                    text: `plainText`,
-                    html: `htmlBody`
-                }
-
-                // sending mail
-                let mailerResponse = mailer(mailConfugration)
-                res.json(mailerResponse)
-            }
-            else
-                res.json({ status: false, message: 'Email address not registered' })
-        })
-        .catch(err => res.json({ status: false, message: 'Fail to send Email', error: err }))
+    
 }
 
 // exporting module

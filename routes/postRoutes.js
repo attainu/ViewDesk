@@ -22,6 +22,7 @@ Router.post('/api/login', login)
 /** Admin routes */
 Router.post('/api/admin/addUser', Authenticate, addUser)
 Router.post('/api/admin/removeUser', Authenticate, removeUser)
+
 //Router.post('/admin/report', Authenticate, forwardReport)
 
 /** professor routes */
@@ -30,12 +31,13 @@ Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
 Router.post('/api/professor/attendance', Authenticate, generateAttendance)
 Router.post('/api/professor/events', Authenticate, addEvent)
 
+
 /** librarina routes */
 Router.post('/api/librarian/archieve', Authenticate, addBook)
 
 /** Student routes */
 Router.post('/api/student/markattendance', Authenticate, markAttendance)
-Router.post('/api/student/password', Authenticate, resetPassword)
+
 
 // exporting module
 module.exports = Router
