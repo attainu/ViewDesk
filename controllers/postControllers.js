@@ -217,12 +217,79 @@ controllers.markAttendance = (req, res) => {
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.resetPassword = (req, res) => {
 
-    
+    const userPwd = req.body.password
+    const newPassword = req.body.newPassword
+
+    const data = reqTokenDecoder()
+
+    /**-------------------------------------------------------- */
+    /**
+     * modifying codes to fix bug
+     */
+
+    // finding user by ID
+    User.findById(data.id)
+        .then(doc => {
+            if (doc) {
+
+                // comparing old password
+                bcrypt.compare(userPwd, doc.password)
+                    .then(response => {
+                        if (response) {
+
+                            // updating with new password
+                            User.update({ _id: doc.id }, { $set: { password: newPassword } }, { new: true })
+                                .then(response => {
+                                    if (response)
+                                        res.json({ status: true, message: 'Password changed successfully' })
+                                    else
+                                        res.json({ status: false, message: 'Failed to change password' })
+                                })
+                                .catch(err => res.json({ status: true, message: 'Failed to change password', error: err }))
+                        }
+                        else // password don't match
+                            res.json({ status: false, message: 'wrong password' })
+                    })
+                    .catch(err => res.json({ status: false, message: 'fail to compare password', error: err }))
+            }
+            else // User not found
+                res.json({ status: true, message: 'User not found' })
+        })
+        .catch(err => res.json({ status: true, message: 'User not found', error: err })) 
 }
 
 controllers.forgotPassword = (req, res) => {
 
-    
+    /**
+     * need to integrate with Google console
+     * to make it work properly
+     */
+    const userEmail = req.body.email
+
+    User.findOne({ email: userEmail })
+        .then(user => {
+            if (user) {
+
+                // generating token
+                const token = jwt.sign()
+
+                // setup mail confugration
+                const mailConfugration = {
+                    from: 'allspark.viewDesk@gmail.com',
+                    to: userEmail,
+                    subject: 'Reset password',
+                    text: `plainText`,
+                    html: `htmlBody`
+                }
+
+                // sending mail
+                let mailerResponse = mailer(mailConfugration)
+                res.json(mailerResponse)
+            }
+            else
+                res.json({ status: false, message: 'Email address not registered' })
+        })
+        .catch(err => res.json({ status: false, message: 'Fail to send Email', error: err }))
 }
 
 // exporting module
