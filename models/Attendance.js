@@ -11,6 +11,4 @@ const AttendanceLinkSchema = new Schema({
 
 let AttendanceLink = mongoose.model('attendance', AttendanceLinkSchema)
 
-module.exports = {
-    AttendanceLink
-}
+module.exports = { AttendanceLink }

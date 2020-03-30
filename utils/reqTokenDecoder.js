@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-let decoder = (req) => {
+let reqTokenDecoder = (req) => {
     /**
      * This function fetches the token from request headers.
      * Decodes and return it
@@ -15,4 +15,4 @@ let decoder = (req) => {
     return jwt.decode(token)
 }
 
-module.exports = decoder
+module.exports = reqTokenDecoder

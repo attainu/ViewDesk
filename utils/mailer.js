@@ -11,7 +11,7 @@ let mailer = (mailOptions) => {
                 user: "allspark.viewdesk@gmail.com", // Your gmail address.
                 clientId: "634698684173-6982arb7410768jp6cdaqug9o4njrt0n.apps.googleusercontent.com",
                 clientSecret: "UFYowYDk55286EESP14TVJN4",
-                refreshToken: "REFRESH_TOKEN_YOU_JUST_FOUND"
+                refreshToken: "1//04mVF98io6qHICgYIARAAGAQSNwF-L9IrYEy7wPfAMYK-DfqqOudWns7QpqNY_3xTlJMFZFFkf8mq0cibf3dmK5gjZ634wssOsoA"
             }
         }
     });

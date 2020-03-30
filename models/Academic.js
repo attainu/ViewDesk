@@ -16,7 +16,7 @@ const MarksheetSchema = new Schema({
     */
     name: { type: String, required: [true, 'Student name required'] },
     email: { type: String, required: [true, 'Student Email required'] },
-    exam: { type: String, required: [true, 'Exam name required']},
+    exam: { type: String, required: [true, 'Exam name required'] },
     branch: { type: String, required: [true, 'Student branch reqired'] },
     grade: { type: String, required: [true, 'Grade required'] },
     marks: {
@@ -47,8 +47,4 @@ let Marksheet = mongoose.model('marksheet', MarksheetSchema)
 let Timetable = mongoose.model('timetable', TimetableSchema)
 
 // exporting Model
-module.exports = {
-    Curriculum,
-    Marksheet,
-    Timetable
-}
+module.exports = { Curriculum, Marksheet, Timetable }

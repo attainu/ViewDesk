@@ -1,5 +1,5 @@
-const Router = require('express').Router()
-const { admAuth, proAuth, libAuth, stdAuth /** middlewares */} = require('../middlewares/authenticate')
+let Router = require('express').Router()
+const  Authenticate = require('../middlewares/authenticate')
 
 const { AdminProfile, classroom, marksheet, /** Admin functions */
         professorProfile, professorForum, /** Professor functions */
@@ -8,32 +8,32 @@ const { AdminProfile, classroom, marksheet, /** Admin functions */
         calendar /** Common functions */} = require('../controllers/getControllers')
 
 /** Admin routes */
-Router.get('/admin/profile', admAuth, AdminProfile)
-Router.get('/admin/classroom', admAuth, classroom) // optional
-Router.get('/admin/marksheet', admAuth, marksheet) 
-Router.get('/admin/calendar', admAuth, calendar)
+Router.get('/admin/profile', Authenticate, AdminProfile)
+Router.get('/admin/classroom', Authenticate, classroom) // optional
+Router.get('/admin/marksheet', Authenticate, marksheet)
+Router.get('/admin/calendar', Authenticate, calendar)
 
 
 /** professor routes */
-Router.get('/professor/profile', proAuth, professorProfile)
-Router.get('/professor/calendar', proAuth, calendar)
-Router.get('/professor/forum', proAuth, professorForum)
+Router.get('/professor/profile', Authenticate, professorProfile)
+Router.get('/professor/calendar', Authenticate, calendar)
+Router.get('/professor/forum', Authenticate, professorForum)
 
 
 /** Librarian routes */
-Router.get('/librarian/profile', libAuth, librarianProfile)
-Router.get('/librarian/archieve', libAuth, issueBook)
-Router.get('/librarian/records', libAuth, issueRecord)
-Router.get('/librarian/calendar', libAuth, calendar)
-Router.get('/librarian/forum', libAuth, libForum)
+Router.get('/librarian/profile', Authenticate, librarianProfile)
+Router.get('/librarian/archieve', Authenticate, issueBook)
+Router.get('/librarian/records', Authenticate, issueRecord)
+Router.get('/librarian/calendar', Authenticate, calendar)
+Router.get('/librarian/forum', Authenticate, libForum)
 
 /** Students routes */
-Router.get('/student/profile', stdAuth, studentProfile)
-Router.get('/student/curriculum', stdAuth, curriculum)
-Router.get('/student/timetable', stdAuth, timetable)
-Router.get('/student/progress', stdAuth, progress)
-Router.get('/student/issuedBooks', stdAuth, issuedBooks)
-Router.get('/student/calendar', stdAuth, calendar)
-Router.get('/student/forum', stdAuth, studentForum)
+Router.get('/student/profile', Authenticate, studentProfile)
+Router.get('/student/curriculum', Authenticate, curriculum)
+Router.get('/student/timetable', Authenticate, timetable)
+Router.get('/student/progress', Authenticate, progress)
+Router.get('/student/issuedBooks', Authenticate, issuedBooks)
+Router.get('/student/calendar', Authenticate, calendar)
+Router.get('/student/forum', Authenticate, studentForum)
 
 module.exports = Router

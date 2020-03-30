@@ -1,12 +1,12 @@
 // Database Modules
 require('../models/DB')
-const User = require('../models/User')
+const { User }= require('../models/User')
 const Library = require('../models/Archive')
 const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 
 /** */
 const jwt = require('jsonwebtoken')
-const decoder = require('../utils/token_decoder') // utility function
+const reqTokenDecoder = require('../utils/reqTokenDecoder') // utility function
 require('dotenv').config()
 
 let controllers = {}
@@ -15,7 +15,7 @@ let controllers = {}
 controllers.AdminProfile = (req, res) => {
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     // finding user in DB
     User.findOne({ email: data.email, role: data.role })
@@ -64,7 +64,7 @@ controllers.marksheet = (req, res) => {
 controllers.professorProfile = (req, res) => {
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     // finding user in DB
     User.findOne({ email: data.email, role: data.role })
@@ -100,7 +100,7 @@ controllers.professorForum = (req, res) => {
 controllers.librarianProfile = (req, res) => {
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     // finding user in DB
     User.findOne({ email: data.email, role: data.role })
@@ -140,7 +140,7 @@ controllers.libForum = (req, res) => {
 controllers.studentProfile = (req, res) => {
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     // finding user in DB
     User.findOne({ email: data.email, role: data.role })
@@ -167,7 +167,7 @@ controllers.studentProfile = (req, res) => {
 controllers.curriculum = (req, res) => {
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     // finds branch curriculum in DB
     Curriculum.find({ branch: data.branch })
@@ -183,7 +183,7 @@ controllers.curriculum = (req, res) => {
 controllers.timetable = (req, res) => {
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     // finds branch timetable in DB
     Timetable.findOne({ branch: data.branch })
@@ -202,11 +202,11 @@ controllers.issuedBooks = (req, res) => {
 
     /**
      * to view issued books search in Archieve
-     * and look into the issuedTo field of each book 
+     * and look into the issuedTo field of each book
      */
 
     // getting token from headers
-    const data = decoder(req)
+    const data = reqTokenDecoder(req)
 
     Library.find({ issuedTo: data.email, issued: true })
         .then(issued_books => {

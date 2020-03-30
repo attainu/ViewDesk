@@ -2,9 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
 
-/**
- *  
- */
+
 const UserSchema = new Schema({
     name: { type: String, required: [true, 'Name required'] },
     email: { type: String, required: [true, 'Email required'] },
@@ -15,8 +13,6 @@ const UserSchema = new Schema({
     mobile_number: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now() }
 })
-
-// Add a middleware here to check Email already registered before saving them 
 
 // password hashing middleware
 UserSchema.pre('save', function (next) {
@@ -38,6 +34,44 @@ UserSchema.pre('save', function (next) {
     })
 })
 
-let User = mongoose.model('user', UserSchema)
+const AdminSchema = new Schema({
+    name: { type: String },
+    email: { type: String },
+    branch: { type: String },
+    profile_pic: { type: String },
+    contact_no: { type: Number }
+})
 
-module.exports = User
+const ProfessorSchema = new Schema({
+    name: { type: String },
+    email: { type: String },
+    branch: { type: String },
+    profile_pic: { type: String },
+    contact_no: { type: Number }
+})
+
+const LibrarianSchema = new Schema({
+    name: { type: String },
+    email: { type: String },
+    profile_pic: { type: String },
+    contact_no: { type: Number },
+})
+
+const StudentSchema = new Schema({
+    name: { type: String },
+    email: { type: String },
+    branch: { type: String },
+    batch: { type: String },
+    profile_pic: { type: String },
+    contact_no: { type: Number },
+    parent_email: { type: String },
+    parent_contact_no: { type: Number }
+})
+
+let User = mongoose.model('user', UserSchema)
+let Admin = mongoose.model('admin', AdminSchema)
+let Professor = mongoose.model('professor', ProfessorSchema)
+let Librarian = mongoose.model('librarian', LibrarianSchema)
+let Student = mongoose.model('student', StudentSchema)
+
+module.exports = { User, Admin, Professor, Librarian, Student }

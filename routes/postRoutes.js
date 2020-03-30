@@ -1,5 +1,5 @@
 const Router = require('express').Router()
-const { admAuth, proAuth, libAuth, stdAuth } = require('../middlewares/authenticate')
+const Authenticate = require('../middlewares/authenticate')
 
 const { register, login, resetPassword, forgotPassword,/** common functions */
         addUser, removeUser, /** Admin functions*/
@@ -20,22 +20,22 @@ Router.post('/register', register)
 Router.post('/login', login)
 
 /** Admin routes */
-Router.post('/admin/addUser', admAuth, addUser)
-Router.post('/admin/removeUser', admAuth, removeUser)
-//Router.post('/admin/report', admAuth, forwardReport)
+Router.post('/admin/addUser', Authenticate, addUser)
+Router.post('/admin/removeUser', Authenticate, removeUser)
+//Router.post('/admin/report', Authenticate, forwardReport)
 
 /** professor routes */
-Router.post('/professor/curriculum', proAuth, curriculum)
-Router.post('/professor/marksheet', proAuth, createMarksheet)
-Router.post('/professor/attendance', proAuth, generateAttendance)
-Router.post('/professor/events', proAuth, addEvent)
+Router.post('/professor/curriculum', Authenticate, curriculum)
+Router.post('/professor/marksheet', Authenticate, createMarksheet)
+Router.post('/professor/attendance', Authenticate, generateAttendance)
+Router.post('/professor/events', Authenticate, addEvent)
 
 /** librarina routes */
-Router.post('/librarian/archieve', libAuth, addBook)
+Router.post('/librarian/archieve', Authenticate, addBook)
 
 /** Student routes */
-Router.post('/student/markattendance', stdAuth, markAttendance)
-Router.post('/student/password', stdAuth, resetPassword)
+Router.post('/student/markattendance', Authenticate, markAttendance)
+Router.post('/student/password', Authenticate, resetPassword)
 
 // exporting module
 module.exports = Router

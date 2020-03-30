@@ -1,6 +1,6 @@
 /** database modules */
 require('../models/DB')
-const User = require('../models/User')
+const { User } = require('../models/User')
 const Library = require('../models/Archive')
 const { AttendanceLink } = require('../models/Attendance')
 const { Curriculum, Marksheet } = require('../models/Academic')
@@ -8,7 +8,7 @@ const { Curriculum, Marksheet } = require('../models/Academic')
 /** packages & modules */
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const reqToken = require('../utils/token_decoder')
+const reqTokenDecoder = require('../utils/reqTokenDecoder')
 const mailer = require('../utils/mailer')
 
 require('dotenv').config()
@@ -51,7 +51,7 @@ controllers.login = (req, res) => {
                             role: user.role,
                             branch: user.branch
                         }
-                        console.log(payload)
+                        
                         // generating token
                         const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' })
 
@@ -134,7 +134,7 @@ controllers.generateAttendance = (req, res) => {
     let branch = req.params.branch
 
     // fetching user's info from request token
-    const data = reqToken()
+    const data = reqTokenDecoder()
     const link = jwt.sign(data, process.env.JWT_KEY, { expiresIn: '10m' })
 
     // Attendance link info
@@ -188,7 +188,7 @@ controllers.markAttendance = (req, res) => {
     // jwt - iat, exp
 
     // fetching user's info from request token
-    const data = reqToken()
+    const data = reqTokenDecoder()
 
     // setting user branch
     let userBranch = data.branch
@@ -220,26 +220,13 @@ controllers.resetPassword = (req, res) => {
     const userPwd = req.body.password
     const newPassword = req.body.newPassword
 
-    const data = reqToken()
-    const userEmail = data.email
+    const data = reqTokenDecoder()
 
     /**-------------------------------------------------------- */
     /**
      * modifying codes to fix bug
      */
-    User.findOne({ email: userEmail })
-        .then(user => {
-            if (user) {
-                bcrypt.compare(userPwd, user.params)
-                    .then(response => {
-                        if (response)
-                            User.updateOne({})
-                    })
-                    .catch()
-
-            }
-        })
-        .catch()
+    
 
     /**---------------------------------------------------------- */
 
