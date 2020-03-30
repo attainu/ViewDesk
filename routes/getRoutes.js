@@ -1,7 +1,7 @@
 const Router = require('express').Router()
 const { admAuth, proAuth, libAuth, stdAuth /** middlewares */} = require('../middlewares/authenticate')
 
-const { AdminProfile, classrooms, allMarksheet, /** Admin functions */
+const { AdminProfile, classroom, marksheet, /** Admin functions */
         professorProfile, professorForum, /** Professor functions */
         librarianProfile, issueBook, issueRecord, libForum, /** Librarian functions */
         studentProfile, curriculum, timetable, progress, issuedBooks, studentForum, /**  Student functions */
@@ -9,9 +9,9 @@ const { AdminProfile, classrooms, allMarksheet, /** Admin functions */
 
 /** Admin routes */
 Router.get('/admin/profile', admAuth, AdminProfile)
-Router.get('/admin/classroms', admAuth, classrooms)
-Router.get('/admin/marksheet', admAuth, allMarksheet)
-Router.get('/admin/dashboard', admAuth, calendar)
+Router.get('/admin/classroom', admAuth, classroom) // optional
+Router.get('/admin/marksheet', admAuth, marksheet) 
+Router.get('/admin/calendar', admAuth, calendar)
 
 
 /** professor routes */
@@ -22,8 +22,8 @@ Router.get('/professor/forum', proAuth, professorForum)
 
 /** Librarian routes */
 Router.get('/librarian/profile', libAuth, librarianProfile)
-Router.get('/librarian/issuebook', libAuth, issueBook)
-Router.get('/librarian/record', libAuth, issueRecord)
+Router.get('/librarian/archieve', libAuth, issueBook)
+Router.get('/librarian/records', libAuth, issueRecord)
 Router.get('/librarian/calendar', libAuth, calendar)
 Router.get('/librarian/forum', libAuth, libForum)
 

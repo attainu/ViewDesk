@@ -6,9 +6,21 @@ let authenticate = {}
 /** authenticate Admin routes */
 authenticate.admAuth = (req, res, next) => {
 
+    /**
+     * testing codes for getting the user from req.path
+     * and use it to check user role from token
+     * 
+     * purpose:- eliminate the simmilar authentication middleware of specific user
+     */
+    //let slices = req.path.split('/')
+    //const user = slices[1]
+    //const users = ['admin', 'professor', 'librarian', 'student']
+    //console.log(users.find(() => user))
+    //---------------
+
     const header = req.headers['authorization']
 
-    // checking for req.header
+    // checking for header
     if (typeof header !== undefined) {
         const bearer = header.split(' ')
         const token = bearer[1]
@@ -31,7 +43,7 @@ authenticate.proAuth = (req, res, next) => {
     
     const header = req.headers['authorization']
 
-    // checking for req.header
+    // checking for header
     if (typeof header !== undefined) {
         const bearer = header.split(' ')
         const token = bearer[1]
@@ -54,7 +66,7 @@ authenticate.libAuth = (req, res, next) => {
    
     const header = req.headers['authorization']
 
-    // checking for req.header
+    // checking for header
     if (typeof header !== undefined) {
         const bearer = header.split(' ')
         const token = bearer[1]
@@ -77,7 +89,7 @@ authenticate.stdAuth = (req, res, next) => {
   
     const header = req.headers['authorization']
 
-    // checking for req.header
+    // checking for header
     if (typeof header !== undefined) {
         const bearer = header.split(' ')
         const token = bearer[1]

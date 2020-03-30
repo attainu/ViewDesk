@@ -1,29 +1,91 @@
 // Database Modules
 require('../models/DB')
 const User = require('../models/User')
+const Library = require('../models/Archive')
+const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 
+/** */
 const jwt = require('jsonwebtoken')
+const decoder = require('../utils/token_decoder') // utility function
 require('dotenv').config()
 
 let controllers = {}
 
-/**---------Admin controllers------------------------*/
+/**---------------------------------------------------Admin controllers----------------------------------------------------*/
 controllers.AdminProfile = (req, res) => {
-    
+
+    // getting token from headers
+    const data = decoder(req)
+
+    // finding user in DB
+    User.findOne({ email: data.email, role: data.role })
+        .then(user => {
+            if (user)
+                //sending JSON response
+                res.json({
+                    status: true,
+                    message: `Profile found`,
+                    profile: {
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        branch: 'Add branch here...'
+                        /** add more profile details here */
+                    }
+                })
+            else
+                res.json({ status: true, message: 'Profile not found' })
+        })
+        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
-controllers.classrooms = (req, res) => {
+controllers.classroom = (req, res) => {
     res.json('All Classrooms')
 }
 
-controllers.allMarksheet = (req, res) => {
-    res.json('All Marksheet')
+controllers.marksheet = (req, res) => {
+
+
+    let branch = req.params.branch
+    let email = req.query.email
+    let query = { branch: branch, email: email }
+    Marksheet.find(query)
+        .then(marksheet => {
+            if (marksheet)
+                res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
+            else
+                res.json({ status: true, message: 'Marksheet Not found', })
+        })
+        .catch( err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
 }
 
 
-/**---------Professor controllers--------------------*/
+/**---------------------------------------------------Professor controllers----------------------------------------------------*/
 controllers.professorProfile = (req, res) => {
-    res.json('Professor Profile')
+
+    // getting token from headers
+    const data = decoder(req)
+
+    // finding user in DB
+    User.findOne({ email: data.email, role: data.role })
+        .then(user => {
+            if (user)
+                //sending JSON response
+                res.json({
+                    status: true,
+                    message: `Profile found`,
+                    profile: {
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        branch: 'Add branch here...'// user.branch
+                        /** add more profile details here */
+                    }
+                })
+            else
+                res.json({ status: true, message: 'Profile not found' })
+        })
+        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
 controllers.calendar = (req, res) => {
@@ -34,14 +96,32 @@ controllers.professorForum = (req, res) => {
     res.json('Professor Forum')
 }
 
-
-/**---------Librarina controller------------ */
-controllers.librarianDashboard = (req, res) => {
-    res.json('Librarian Dashboard')
-}
-
+/**---------------------------------------------------Librarian controllers----------------------------------------------------*/
 controllers.librarianProfile = (req, res) => {
-    res.json('Librarian Profile')
+
+    // getting token from headers
+    const data = decoder(req)
+
+    // finding user in DB
+    User.findOne({ email: data.email, role: data.role })
+        .then(user => {
+            if (user)
+                //sending JSON response
+                res.json({
+                    status: true,
+                    message: `Profile found`,
+                    profile: {
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        branch: 'Add branch here...'
+                        /** add more profile details here */
+                    }
+                })
+            else
+                res.json({ status: true, message: 'Profile not found' })
+        })
+        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
 controllers.issueBook = (req, res) => {
@@ -56,17 +136,62 @@ controllers.libForum = (req, res) => {
     res.json('librarian forum')
 }
 
-/**---------Student controllers---------------*/
+/**---------------------------------------------------Student controllers----------------------------------------------------*/
 controllers.studentProfile = (req, res) => {
-    res.json('Student Profile')
+
+    // getting token from headers
+    const data = decoder(req)
+
+    // finding user in DB
+    User.findOne({ email: data.email, role: data.role })
+        .then(user => {
+            if (user)
+                //sending JSON response
+                res.json({
+                    status: true,
+                    message: `Profile found`,
+                    profile: {
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        branch: 'Add branch here...'
+                        /** add more profile details here */
+                    }
+                })
+            else
+                res.json({ status: true, message: 'Profile not found' })
+        })
+        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
 controllers.curriculum = (req, res) => {
-    res.json('curriculum')
+
+    // getting token from headers
+    const data = decoder(req)
+
+    // finds branch curriculum in DB
+    Curriculum.find({ branch: data.branch })
+        .then(topics => {
+            if (topics)
+                res.json({ status: true, message: `Curriculum found`, Curriculum: topics })
+            else
+                res.json({ status: false, message: 'Curriculum Not Found' })
+        })
+        .catch(err => json({ status: false, message: 'Curriculum Not Found', error: err }))
 }
 
 controllers.timetable = (req, res) => {
-    res.json('time table')
+
+    // getting token from headers
+    const data = decoder(req)
+
+    // finds branch timetable in DB
+    Timetable.findOne({ branch: data.branch })
+        .then(timetable => {
+            if (timetable) res.json({ status: true, message: `time table found`, Timetable: timetable })
+            else res.josn({ status: false, message: 'not found', })
+        })
+        .catch(err => res.josn({ status: false, message: 'Time table Not Found', error: err }))
 }
 
 controllers.progress = (req, res) => {
@@ -74,14 +199,30 @@ controllers.progress = (req, res) => {
 }
 
 controllers.issuedBooks = (req, res) => {
-    res.json('issued books')
+
+    /**
+     * to view issued books search in Archieve
+     * and look into the issuedTo field of each book 
+     */
+
+    // getting token from headers
+    const data = decoder(req)
+
+    Library.find({ issuedTo: data.email, issued: true })
+        .then(issued_books => {
+            if (issued_books)
+                res.json({ status: true, message: 'issued Book(s) found', books: issued_books })
+            else
+                res.json({ status: false, message: 'No issued Books found', books: issued_books })
+        })
+        .catch(err => res.json({ status: false, message: 'No issued Books found', Error: err }))
 }
 
 controllers.studentForum = (req, res) => {
     res.json('Student Forum')
 }
 
-/**---------Common controllers--------------*/
+/**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.calendar = (req, res) => {
     res.json('calender')
 }
