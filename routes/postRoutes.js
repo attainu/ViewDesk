@@ -16,26 +16,26 @@ const { register, login, resetPassword, forgotPassword,/** common functions */
  */
 
 /** Register & Login routes */
-Router.post('/register', register)
-Router.post('/login', login)
+Router.post('/api/register', register)
+Router.post('/api/login', login)
 
 /** Admin routes */
-Router.post('/admin/addUser', Authenticate, addUser)
-Router.post('/admin/removeUser', Authenticate, removeUser)
+Router.post('/api/admin/addUser', Authenticate, addUser)
+Router.post('/api/admin/removeUser', Authenticate, removeUser)
 //Router.post('/admin/report', Authenticate, forwardReport)
 
 /** professor routes */
-Router.post('/professor/curriculum', Authenticate, curriculum)
-Router.post('/professor/marksheet', Authenticate, createMarksheet)
-Router.post('/professor/attendance', Authenticate, generateAttendance)
-Router.post('/professor/events', Authenticate, addEvent)
+Router.post('/api/professor/curriculum', Authenticate, curriculum)
+Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
+Router.post('/api/professor/attendance', Authenticate, generateAttendance)
+Router.post('/api/professor/events', Authenticate, addEvent)
 
 /** librarina routes */
-Router.post('/librarian/archieve', Authenticate, addBook)
+Router.post('/api/librarian/archieve', Authenticate, addBook)
 
 /** Student routes */
-Router.post('/student/markattendance', Authenticate, markAttendance)
-Router.post('/student/password', Authenticate, resetPassword)
+Router.post('/api/student/markattendance', Authenticate, markAttendance)
+Router.post('/api/student/password', Authenticate, resetPassword)
 
 // exporting module
 module.exports = Router

@@ -5,7 +5,7 @@ let Authenticate = (req, res, next) => {
 
     // finding user from request path
     let slices = req.path.split('/')
-    const req_user = slices[1]
+    const req_user = slices[2]
 
     // all users
     const users = ['admin', 'professor', 'librarian', 'student']
