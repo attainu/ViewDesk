@@ -28,5 +28,5 @@ const forumSchema =  {
 
 const Forum = sequelize.define('forum', forumSchema);
 // Forum.belongsTo(student,{as:"student_id"})
-Forum.sync()
+// Forum.sync()
 module.exports = Forum;

@@ -7,7 +7,7 @@ const transportOptions = {
     debug: true,
     auth: {
       user: "starktower.manhattan@gmail.com",
-      pass: "tony@123"
+      pass: "fltwuvqbcsuwlori"
     }
   };
 

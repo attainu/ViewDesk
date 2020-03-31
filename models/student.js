@@ -4,16 +4,9 @@ const Sequelize= require("sequelize");
 const User = require("./user")
 const Professor = require("./professor")
 const Book = require("./book")
+const{hash} = require("bcrypt")
 
 const studentSchema = {
-    // userId:{
-    //             type: Sequelize.INTEGER,    //how to connect this to user student id
-    //             allowNull: true, 
-    //             references:{
-    //                 model: User,
-    //                 key: 'id'
-    //             }               
-    //         },
 
     // classTeacher: {
     //     type: Sequelize.INTEGER,
@@ -39,9 +32,9 @@ const studentSchema = {
 
 
 const Student = sequelize.define('student', studentSchema);
-
+Student.sync()
 Student.belongsTo(Professor)
-// Student.sync()
+
 
 
 // Student.beforeCreate(async user => {

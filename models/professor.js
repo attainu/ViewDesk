@@ -19,7 +19,7 @@ const professorSchema = {
 
 
 const Professor = sequelize.define('professor', professorSchema);
-Professor.sync()
+// Professor.sync()
 
 // Admin.init(adminSchema, {
 //     sequelize,

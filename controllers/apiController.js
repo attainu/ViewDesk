@@ -17,13 +17,15 @@ const { compareSync } = require("bcrypt")
 let User_login = async (req, res,next) => {
   let { email, password } = req.body;
   let user = await User.findOne({    
-    email
+    where:{email}
+    
   });
-  console.log(user)
+  console.log(user.password)
   if (!user) {
     return res.status(400).send("User not found");
   }
   if (compareSync(password, user.password)) {
+    console.log("heree")
     let token = await sign({ role: user.role, name: user.name, email: user.email },
         /*process.env.JWT_SECRET_KEY,*/"qwerty123",
       {
@@ -127,9 +129,10 @@ const marksheet_added = async (req, res) => {
 
 const ResetPassword = async (req, res) => {
   const { resetToken } = req.params;
+  console.log(resetToken)
   try {
-    let user = await User.findOne({    // !User is should  be search for student and prof as well
-      resetToken                          //WHAT will User return ???
+    let user = await User.findOne({ where:{ resetToken    }   // !User is should  be search for student and prof as well
+                            //WHAT will User return ???
     });
     if (!user) return res.status(400).send("User not found");
 
@@ -138,6 +141,7 @@ const ResetPassword = async (req, res) => {
     ).getTime()}`;
 
     const payload = await verify(resetToken, secretKey);      //verifying token
+    console.log(payload)
     if (payload) {
 
       const { password, email } = req.body;
@@ -168,11 +172,13 @@ async function PasswordRecoveryEmailSent(req, res) {
   let { email } = req.body;
   if (!email) return res.status(400).send("Email is required!")
   try {
-    let user = await User.findOne({    // !User is should  be search for student and prof as well
-      email
+    let user = await User.findOne({ where:
+        {email}   // !User is should  be search for student and prof as well
+      
     });
     if (!user) return res.status(400).send("User not found!");
-    await user.generateToken();
+   await user.generateToken();
+  
     res.json({Success:"Email sent successfully. Check your inbox"});
   }
   catch (err) {
@@ -187,14 +193,15 @@ const password_changed = async (req, res) => {
   if (!email || !oldpassword || !newpassword)
     return res.status(400).send("Bad request");
   try {
-    const user = await User.findOne({     //changed Student to User
-        email
+    const user = await User.findOne({  where:{email}   //changed Student to User
+        
     });
     if (!user) return res.status(401).send("Incorrect credentials");
     const isMatched = await compareSync(oldpassword, user.password);
 
     if (!isMatched) return res.status(401).send("Incorrect credentials");
-    await user.update({ password: newpassword });
+    console.log("heyy")
+     await user.update({password:newpassword})
 
     return res.json({ Success: "Your Password has been changed" })
   }

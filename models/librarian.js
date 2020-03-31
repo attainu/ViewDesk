@@ -24,7 +24,7 @@ const librarianSchema = {
 
 
 const Librarian= sequelize.define('librarian', librarianSchema);
-Librarian.sync()
+// Librarian.sync()
 
 // Admin.init(adminSchema, {
 //     sequelize,

@@ -39,7 +39,7 @@ class User extends Model {
         const token = await sign({ id: this.getDataValue("id") }, secretKey, {
             expiresIn: (1000 * 60 * 10).toString()
         });
-        
+        console.log(token)
         this.setDataValue("resetToken", token);
         await this.save();
         await sendMailToUser(this.getDataValue("email"), token);
@@ -116,12 +116,25 @@ Professor.belongsTo(User)
 Book.belongsTo(User)
 Librarian.belongsTo(User)
 
-// User.sync()
+// User.sync({force:true})
 
 User.beforeCreate(async user => {
     try{
     const hashedPassword = await hash(user.password, 10);
     user.password = hashedPassword;
+  }
+  catch(err){
+      console.log(err)
+  }
+});
+
+User.beforeUpdate(async user => {
+    try{
+        if (user.changed("password")){
+            const hashedPassword = await hash(user.password, 10);       //ismodified needed
+        user.password = hashedPassword;  
+        }
+                       
   }
   catch(err){
       console.log(err)
