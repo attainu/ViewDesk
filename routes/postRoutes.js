@@ -21,7 +21,7 @@ Router.post('/api/login', login)
 
 /** Admin routes */
 Router.post('/api/admin/addUser', Authenticate, addUser)
-Router.post('/api/admin/removeUser', Authenticate, removeUser)
+Router.delete('/api/admin/removeUser', Authenticate, removeUser)
 
 //Router.post('/admin/report', Authenticate, forwardReport)
 
@@ -30,6 +30,7 @@ Router.post('/api/professor/curriculum', Authenticate, curriculum)
 Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
 Router.post('/api/professor/attendance', Authenticate, generateAttendance)
 Router.post('/api/professor/events', Authenticate, addEvent)
+Router.post('/api/professor/resetpassword', Authenticate, resetPassword)
 
 
 /** librarina routes */

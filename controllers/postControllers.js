@@ -220,7 +220,7 @@ controllers.resetPassword = (req, res) => {
     const userPwd = req.body.password
     const newPassword = req.body.newPassword
 
-    const data = reqTokenDecoder()
+    const data = reqTokenDecoder(req)
 
     /**-------------------------------------------------------- */
     /**

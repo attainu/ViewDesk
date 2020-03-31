@@ -9,8 +9,6 @@ const UserSchema = new Schema({
     password: { type: String, required: [true, 'password required'] },
     role: { type: String, required: [true, 'role required'] },
     branch: { type: String, default: 'common' },
-    profile_pic: { type: String, default: null },
-    mobile_number: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now() }
 })
 
@@ -35,8 +33,7 @@ UserSchema.pre('save', function (next) {
 })
 
 const AdminSchema = new Schema({
-    name: { type: String },
-    email: { type: String },
+    user: { type: Schema.Types.ObjectId, ref: 'user' },
     branch: { type: String },
     profile_pic: { type: String },
     contact_no: { type: Number }
