@@ -1,11 +1,12 @@
 // Database Modules
 require('../models/DB')
-const { User }= require('../models/User')
+const { User, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
 const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 
 /** */
 const jwt = require('jsonwebtoken')
+const axios = require('axios')
 const reqTokenDecoder = require('../utils/reqTokenDecoder') // utility function
 require('dotenv').config()
 
@@ -56,7 +57,7 @@ controllers.marksheet = (req, res) => {
             else
                 res.json({ status: true, message: 'Marksheet Not found', })
         })
-        .catch( err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
+        .catch(err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
 }
 
 
@@ -227,5 +228,40 @@ controllers.calendar = (req, res) => {
     res.json('calender')
 }
 
+controllers.redirect = (req, res) => {
+
+    /** redirecting forgot password */
+    if (req.body.params !== undefined) {
+
+        const token = req.body.query
+
+        // finding token in DB
+        PasswordReset.findOne({ user: id, expired: false })
+            .then(link => {
+                if (link.token == token) {
+
+                    // verfiying token validity
+                    jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
+                        if (err)
+                            res.json({ status: false, message: 'password reset link expired', error: err })
+
+                        else {
+                            // redirecting to post routes
+                            axios.post(`/api/resetpassword/:${link}`, { method: 'post' })
+                                .then(response => {
+
+                                    // handle response here...
+                                    console.log(response)
+                                })
+                                .catch(err => res.json({ status: false, message: 'Fail to redirect user', error: err }))
+                        }
+                    })
+                }
+                else
+                    res.json({ status: false, message: 'password reset link not found' })
+            })
+            .catch(err => res.json({ status: false, message: 'password reset link not found' }))
+    }
+}
 //exporting module
 module.exports = controllers

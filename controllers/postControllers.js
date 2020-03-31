@@ -1,6 +1,6 @@
 /** database modules */
 require('../models/DB')
-const { User } = require('../models/User')
+const { User, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
 const { AttendanceLink } = require('../models/Attendance')
 const { Curriculum, Marksheet } = require('../models/Academic')
@@ -217,15 +217,12 @@ controllers.markAttendance = (req, res) => {
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.resetPassword = (req, res) => {
 
+    // getting input from request body
     const userPwd = req.body.password
     const newPassword = req.body.newPassword
 
+    // getting request token from headers
     const data = reqTokenDecoder(req)
-
-    /**-------------------------------------------------------- */
-    /**
-     * modifying codes to fix bug
-     */
 
     // finding user by ID
     User.findById(data.id)
@@ -255,41 +252,61 @@ controllers.resetPassword = (req, res) => {
             else // User not found
                 res.json({ status: true, message: 'User not found' })
         })
-        .catch(err => res.json({ status: true, message: 'User not found', error: err })) 
+        .catch(err => res.json({ status: true, message: 'User not found', error: err }))
 }
 
 controllers.forgotPassword = (req, res) => {
 
-    /**
-     * need to integrate with Google console
-     * to make it work properly
-     */
-    const userEmail = req.body.email
+        /**
+         * // setup mail confugration
+                    const mailConfugration = {
+                        from: 'allspark.viewDesk@gmail.com',
+                        to: userEmail,
+                        subject: 'Reset password',
+                        text: `plainText`,
+                        html: `htmlBody`
+                    }
+         */
+        const userEmail = req.body.email
 
-    User.findOne({ email: userEmail })
-        .then(user => {
-            if (user) {
+    // getting requrest token
+    const data = reqTokenDecoder(req)
+    User.findById(data.id)
+        .then(doc => {
+            if (doc) {
 
-                // generating token
-                const token = jwt.sign()
+                // comparing user email
+                if (doc.email == data.email) {
 
-                // setup mail confugration
-                const mailConfugration = {
-                    from: 'allspark.viewDesk@gmail.com',
-                    to: userEmail,
-                    subject: 'Reset password',
-                    text: `plainText`,
-                    html: `htmlBody`
+                    // user payload
+                    let userInfo = {
+                        id = doc.id,
+                        email: doc.email,
+                        role: doc.role,
+                        branch: doc.branch
+                    }
+
+                    // generating password reset token & storing it in DB
+                    const token = jwt.sign(userInfo, process.env.JWT_KEY, { expiresIn: '10m' })
+                    let resetInfo = { 
+                        user: doc.id,
+                        token: token
+                    }
+                    let newToken = new PasswordReset(...resetInfo)
+                    newToken.save()
+
+                    // password reset link
+                    const resetLink = `/api/resetPassword/:${token}`// mail this link to registered email by nodemailer
+
+                    
                 }
-
-                // sending mail
-                let mailerResponse = mailer(mailConfugration)
-                res.json(mailerResponse)
+                else
+                    res.json({ status: false, message: 'Enter registered email address' })
             }
             else
-                res.json({ status: false, message: 'Email address not registered' })
+                res.json({ status: false, message: 'User not found' })
         })
-        .catch(err => res.json({ status: false, message: 'Fail to send Email', error: err }))
+        .catch(err => res.json({ status: false, message: 'User Not Found', error: err }))
 }
 
 // exporting module

@@ -40,24 +40,20 @@ const AdminSchema = new Schema({
 })
 
 const ProfessorSchema = new Schema({
-    name: { type: String },
-    email: { type: String },
+    user: { type: Schema.Types.ObjectId, ref: 'user' },
     branch: { type: String },
     profile_pic: { type: String },
     contact_no: { type: Number }
 })
 
 const LibrarianSchema = new Schema({
-    name: { type: String },
-    email: { type: String },
+    user: { type: Schema.Types.ObjectId, ref: 'user' },
     profile_pic: { type: String },
     contact_no: { type: Number },
 })
 
 const StudentSchema = new Schema({
-    name: { type: String },
-    email: { type: String },
-    branch: { type: String },
+    user: { type: Schema.Types.ObjectId, ref: 'user' },
     batch: { type: String },
     profile_pic: { type: String },
     contact_no: { type: Number },
@@ -65,10 +61,18 @@ const StudentSchema = new Schema({
     parent_contact_no: { type: Number }
 })
 
+const PasswordResetSchema = new Schema({
+    user: { type: Schema.Types.ObjectId, ref: 'user' },
+    token: { type: String, required: [true, 'password token link required'] },
+    date: { type: Date, default: Date.now() },
+    expired: { type: Boolean, default: false }
+})
+
 let User = mongoose.model('user', UserSchema)
 let Admin = mongoose.model('admin', AdminSchema)
 let Professor = mongoose.model('professor', ProfessorSchema)
 let Librarian = mongoose.model('librarian', LibrarianSchema)
 let Student = mongoose.model('student', StudentSchema)
+let PasswordReset = mongoose.model('passwordRest', PasswordResetSchema)
 
-module.exports = { User, Admin, Professor, Librarian, Student }
+module.exports = { User, Admin, Professor, Librarian, Student, PasswordReset }

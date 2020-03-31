@@ -5,7 +5,11 @@ const { AdminProfile, classroom, marksheet, /** Admin functions */
         professorProfile, professorForum, /** Professor functions */
         librarianProfile, issueBook, issueRecord, libForum, /** Librarian functions */
         studentProfile, curriculum, timetable, progress, issuedBooks, studentForum, /**  Student functions */
-        calendar /** Common functions */} = require('../controllers/getControllers')
+        calendar, /** Common functions */
+        redirect /** redirecting function */ } = require('../controllers/getControllers')
+
+/** redirecting route */
+Router.get('/api/resetPassword/:link', redirect)
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, AdminProfile)

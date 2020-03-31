@@ -18,6 +18,7 @@ const { register, login, resetPassword, forgotPassword,/** common functions */
 /** Register & Login routes */
 Router.post('/api/register', register)
 Router.post('/api/login', login)
+Router.post('/api/resetpassword/:link', forgotPassword)
 
 /** Admin routes */
 Router.post('/api/admin/addUser', Authenticate, addUser)
