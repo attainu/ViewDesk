@@ -131,7 +131,7 @@ const ResetPassword = async (req, res) => {
   const { resetToken } = req.params;
   console.log(resetToken)
   try {
-    let user = await User.findOne({ where:{ resetToken    }   // !User is should  be search for student and prof as well
+    let user = await User.findOne({ where:{ resetToken  }   // !User is should  be search for student and prof as well
                             //WHAT will User return ???
     });
     if (!user) return res.status(400).send("User not found");

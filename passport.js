@@ -10,7 +10,7 @@
 //     callbackURL: "http://www.example.com/auth/google/callback" //this  is to change, ERROR!!  
 //   },
 //   async (accessToken, refreshToken, profile, cb) => {
-//     await Student.findOrCreate({ googleId: profile.id }, function (err, user) {
+//     await Student.findOrCreate(where:{ googleId: profile.id }, function (err, user) {
 //       return cb(err, user);
 //     });
 //   }

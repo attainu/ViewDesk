@@ -17,7 +17,8 @@ const transportOptions = {
 
     html = `<h1>Hi there.</h1>
     <p>You have recently requested for a change in password. Paste this link in POSTMAN along with your email and password(the new one)
-      <a href=${domainName}/reset/${token}>here</a> to reset your password. 
+      <a href=${domainName}/reset/${token}>here</a> to reset your password or paste this link in the postman app ${domainName}/reset/${token} 
+      Dont forget to post email & password in the body. 
        If you didn't initiate the request. Kindly ignore. Thanks :)
     </p>`;
       try {

@@ -10,7 +10,7 @@ const marksheetSchema = {
     //      references:
     //      {
     //          model: Student,
-    //          key : 'userId'
+    //          key : 'id'
     //      }
     //  },
 
@@ -39,6 +39,6 @@ const marksheetSchema = {
 
 const Marksheet = sequelize.define('marksheet', marksheetSchema);
 
-//  Marksheet.belongsTo(student,{as:"student_id"})
-//  Marksheet.sync()
+
+ Marksheet.sync()
 module.exports = Marksheet;

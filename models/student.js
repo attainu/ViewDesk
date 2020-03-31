@@ -3,10 +3,13 @@ const sequelize = require("../db");
 const Sequelize= require("sequelize");
 const User = require("./user")
 const Professor = require("./professor")
+const Marksheet = require("./marksheet")
 const Book = require("./book")
 const{hash} = require("bcrypt")
 
 const studentSchema = {
+
+
 
     // classTeacher: {
     //     type: Sequelize.INTEGER,
@@ -32,8 +35,12 @@ const studentSchema = {
 
 
 const Student = sequelize.define('student', studentSchema);
-Student.sync()
+
 Student.belongsTo(Professor)
+Marksheet.belongsTo(Student)
+
+Student.sync()
+
 
 
 

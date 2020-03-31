@@ -8,7 +8,7 @@ const sequelize = new Sequelize('ams', 'postgres', '1234', {
 });
 
 
-// sequelize.sync({force:true}); //{force:true}
+sequelize.sync() //{force:true}
 
 sequelize
   .authenticate()
