@@ -64,9 +64,11 @@ const StudentSchema = new Schema({
 const PasswordResetSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
     token: { type: String, required: [true, 'password token link required'] },
-    date: { type: Date, default: Date.now() },
-    expired: { type: Boolean, default: false }
+    date: { type: Date, default: Date.now() }
 })
+
+//post() hook for changing the expired status to true after user leaves it.
+//PasswordResetSchema.post()
 
 let User = mongoose.model('user', UserSchema)
 let Admin = mongoose.model('admin', AdminSchema)

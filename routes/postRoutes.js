@@ -1,7 +1,7 @@
 const Router = require('express').Router()
 const Authenticate = require('../middlewares/authenticate')
 
-const { register, login, resetPassword, forgotPassword,/** common functions */
+const { register, login, resetPassword, forgotPassword, setForgotPassword,/** common functions */
         addUser, removeUser, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, curriculum, /** professor functions */
         addBook, /** Librarian functions*/
@@ -18,10 +18,12 @@ const { register, login, resetPassword, forgotPassword,/** common functions */
 /** Register & Login routes */
 Router.post('/api/register', register)
 Router.post('/api/login', login)
-Router.post('/api/resetpassword/:link', forgotPassword)
 
 /** Admin routes */
 Router.post('/api/admin/addUser', Authenticate, addUser)
+Router.post('/api/admin/password/reset', Authenticate, resetPassword)
+Router.post('/api/admin/password/forgot', Authenticate, forgotPassword)
+Router.post('/api/admin/password/:token', Authenticate, setForgotPassword)
 Router.delete('/api/admin/removeUser', Authenticate, removeUser)
 
 //Router.post('/admin/report', Authenticate, forwardReport)
@@ -31,8 +33,6 @@ Router.post('/api/professor/curriculum', Authenticate, curriculum)
 Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
 Router.post('/api/professor/attendance', Authenticate, generateAttendance)
 Router.post('/api/professor/events', Authenticate, addEvent)
-Router.post('/api/professor/resetpassword', Authenticate, resetPassword)
-
 
 /** librarina routes */
 Router.post('/api/librarian/archieve', Authenticate, addBook)

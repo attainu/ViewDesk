@@ -1,15 +1,12 @@
 let Router = require('express').Router()
 const  Authenticate = require('../middlewares/authenticate')
 
-const { AdminProfile, classroom, marksheet, /** Admin functions */
-        professorProfile, professorForum, /** Professor functions */
-        librarianProfile, issueBook, issueRecord, libForum, /** Librarian functions */
-        studentProfile, curriculum, timetable, progress, issuedBooks, studentForum, /**  Student functions */
-        calendar, /** Common functions */
-        redirect /** redirecting function */ } = require('../controllers/getControllers')
+const { AdminProfile, classroom, marksheet, /** Admin controllers */
+        professorProfile, professorForum, /** Professor controllers */
+        librarianProfile, issueBook, issueRecord, libForum, /** Librarian controllers */
+        studentProfile, curriculum, timetable, progress, issuedBooks, studentForum, /**  Student controllers */
+        calendar, /** Common controllers */ } = require('../controllers/getControllers')
 
-/** redirecting route */
-Router.get('/api/resetPassword/:link', redirect)
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, AdminProfile)
@@ -17,12 +14,10 @@ Router.get('/api/admin/classroom', Authenticate, classroom) // optional
 Router.get('/api/admin/marksheet', Authenticate, marksheet)
 Router.get('/api/admin/calendar', Authenticate, calendar)
 
-
 /** professor routes */
 Router.get('/api/professor/profile', Authenticate, professorProfile)
 Router.get('/api/professor/calendar', Authenticate, calendar)
 Router.get('/api/professor/forum', Authenticate, professorForum)
-
 
 /** Librarian routes */
 Router.get('/api/librarian/profile', Authenticate, librarianProfile)

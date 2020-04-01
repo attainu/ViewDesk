@@ -228,40 +228,6 @@ controllers.calendar = (req, res) => {
     res.json('calender')
 }
 
-controllers.redirect = (req, res) => {
 
-    /** redirecting forgot password */
-    if (req.body.params !== undefined) {
-
-        const token = req.body.query
-
-        // finding token in DB
-        PasswordReset.findOne({ user: id, expired: false })
-            .then(link => {
-                if (link.token == token) {
-
-                    // verfiying token validity
-                    jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
-                        if (err)
-                            res.json({ status: false, message: 'password reset link expired', error: err })
-
-                        else {
-                            // redirecting to post routes
-                            axios.post(`/api/resetpassword/:${link}`, { method: 'post' })
-                                .then(response => {
-
-                                    // handle response here...
-                                    console.log(response)
-                                })
-                                .catch(err => res.json({ status: false, message: 'Fail to redirect user', error: err }))
-                        }
-                    })
-                }
-                else
-                    res.json({ status: false, message: 'password reset link not found' })
-            })
-            .catch(err => res.json({ status: false, message: 'password reset link not found' }))
-    }
-}
 //exporting module
 module.exports = controllers

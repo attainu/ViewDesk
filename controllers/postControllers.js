@@ -1,4 +1,8 @@
 /** database modules */
+
+// TESTING CODE
+const mongoose = require('mongoose')
+//-----------
 require('../models/DB')
 const { User, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
@@ -18,9 +22,19 @@ let controllers = {}
 /**---------------------------------------------------Register & Login controllers----------------------------------------------------*/
 controllers.register = (req, res) => {
 
+    // getting user details from requrest body
+    const user = req.body
+
+    let userObj = {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: user.role
+    }
+
     // adding user to DB
-    let user = new User({ ...req.body })
-    user.save()
+    let newUser = new User({ ...userObj })
+    newUser.save()
         .then(credentials => {
             if (credentials)
                 res.json({ status: true, message: 'Registration Successfull' })
@@ -209,104 +223,128 @@ controllers.markAttendance = (req, res) => {
                 res.json({ status: false, message: 'NO SESSION FOUND' })
         })
         .catch(err => res.json({ status: false, message: 'NO SESSION FOUND', error: err }))
-
-
 }
 
 
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.resetPassword = (req, res) => {
 
-    // getting input from request body
+    // getting user input from request body
     const userPwd = req.body.password
     const newPassword = req.body.newPassword
 
     // getting request token from headers
     const data = reqTokenDecoder(req)
 
-    // finding user by ID
+    // finding user
     User.findById(data.id)
         .then(doc => {
-            if (doc) {
 
-                // comparing old password
-                bcrypt.compare(userPwd, doc.password)
-                    .then(response => {
-                        if (response) {
+            // comparing password with hash
+            bcrypt.compare(userPwd, doc.password)
+                .then(response => {
+                    if (response) {
 
-                            // updating with new password
-                            User.update({ _id: doc.id }, { $set: { password: newPassword } }, { new: true })
-                                .then(response => {
-                                    if (response)
-                                        res.json({ status: true, message: 'Password changed successfully' })
-                                    else
-                                        res.json({ status: false, message: 'Failed to change password' })
-                                })
-                                .catch(err => res.json({ status: true, message: 'Failed to change password', error: err }))
-                        }
-                        else // password don't match
-                            res.json({ status: false, message: 'wrong password' })
-                    })
-                    .catch(err => res.json({ status: false, message: 'fail to compare password', error: err }))
-            }
-            else // User not found
-                res.json({ status: true, message: 'User not found' })
+                        // updating password
+                        User.update({ _id: doc.id }, { $set: { password: newPassword } }, { new: true })
+                            .then(response => {
+                                if (response)
+                                    res.json({ status: true, message: 'Password changed successfully' })
+                                else
+                                    res.json({ status: false, message: 'Failed to change password' })
+                            })
+                            .catch(err => res.json({ status: true, message: 'Failed to change password', error: err }))
+                    } else
+                        res.json({ status: false, message: 'wrong password' })
+                })
+                .catch(err => res.json({ status: false, message: 'Wrong password', error: err }))
         })
         .catch(err => res.json({ status: true, message: 'User not found', error: err }))
 }
 
 controllers.forgotPassword = (req, res) => {
 
-        /**
-         * // setup mail confugration
-                    const mailConfugration = {
-                        from: 'allspark.viewDesk@gmail.com',
-                        to: userEmail,
-                        subject: 'Reset password',
-                        text: `plainText`,
-                        html: `htmlBody`
-                    }
-         */
-        const userEmail = req.body.email
+    const userEmail = req.body.email
 
     // getting requrest token
     const data = reqTokenDecoder(req)
-    User.findById(data.id)
+    
+    User.findById('5e8465758469ba1a9c3c5834')
         .then(doc => {
-            if (doc) {
 
-                // comparing user email
-                if (doc.email == data.email) {
+            // comparing user email
+            if (doc.email === userEmail) {
 
-                    // user payload
-                    let userInfo = {
-                        id = doc.id,
-                        email: doc.email,
-                        role: doc.role,
-                        branch: doc.branch
-                    }
-
-                    // generating password reset token & storing it in DB
-                    const token = jwt.sign(userInfo, process.env.JWT_KEY, { expiresIn: '10m' })
-                    let resetInfo = { 
-                        user: doc.id,
-                        token: token
-                    }
-                    let newToken = new PasswordReset(...resetInfo)
-                    newToken.save()
-
-                    // password reset link
-                    const resetLink = `/api/resetPassword/:${token}`// mail this link to registered email by nodemailer
-
-                    
+                // user payload
+                let userInfo = {
+                    id: doc.id,
+                    email: doc.email,
+                    role: doc.role,
+                    branch: doc.branch
                 }
-                else
-                    res.json({ status: false, message: 'Enter registered email address' })
+
+                // generating password reset token & storing it in DB for further validation
+                const token = jwt.sign(userInfo, process.env.JWT_KEY, { expiresIn: '10m' })
+                let info = {
+                    user: doc.id,
+                    token: token
+                }
+                let newToken = new PasswordReset(...info)
+                newToken.save()
+
+                // password reset link
+                const resetLink = `/api/${doc.role}/resetPassword/:${token}`
+                // mail this link to registered email using nodemailer
+
+
+                /**----delete this code after setting nodemailer----*/
+                res.json({ status: true, message: 'Reset token generated', token: token })
+                //---------------------------------------------------
             }
             else
-                res.json({ status: false, message: 'User not found' })
+                res.json({ status: false, message: 'Can not generate reset link. Enter registered email address' })
         })
         .catch(err => res.json({ status: false, message: 'User Not Found', error: err }))
+}
+
+
+controllers.setForgotPassword = (req, res) => {
+
+    // getting new password
+    newPassword = req.body.password
+
+    // getting request headers
+    const data = reqTokenDecoder(req)
+
+    const token = req.body.query
+
+    // finding token in DB
+    PasswordReset.findOne({ _id: data.id })
+        .then(doc => {
+
+            // comparing the sent token with saved one
+            if (doc.token == token) {
+
+                // verfiying token validity
+                jwt.verify(token, process.env.JWT_KEY)
+                    .then(response => {
+
+                        // finding user by id and updating password
+                        User.findByIdAndUpdate({ _id: response.id }, { $set: { password: newPassword } }, { new: true })
+                            .then(response => {
+                                if (response)
+                                    res.json({ status: true, message: 'password updated successfully' })
+                                else
+                                    res.json({ status: false, message: 'fail to update password' })
+                            })
+                            .catch(err => res.json({ status: false, message: 'Fail to update password', error: err }))
+                    })
+                    .catch(err => res.json({ status: false, message: 'reset link expired', error: err }))
+            }
+            else
+                res.json({ status: false, message: 'link tempered' })
+        })
+        .catch(err => res.json({ status: false, message: 'reset link not found' }))
 }
 
 // exporting module
