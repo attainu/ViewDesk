@@ -89,6 +89,20 @@ controllers.professorProfile = (req, res) => {
         .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
+controllers.curriculum = (req, res) => {
+
+    let branch = req.params.branch
+
+    Curriculum.find({ branch: branch })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: `${branch} curriculum found` })
+            else
+                res.json({ status: false, message: `${branch} curriculum not found` })
+        })
+        .catch(error => res.json({ status: false, error }))
+}
+
 controllers.calendar = (req, res) => {
     res.json('Calendar')
 }

@@ -3,7 +3,7 @@ const Authenticate = require('../middlewares/authenticate')
 
 const { register, login, resetPassword, forgotPassword, setForgotPassword,/** common functions */
         addUser, removeUser, /** Admin functions*/
-        addEvent, createMarksheet, generateAttendance, curriculum, /** professor functions */
+        addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
         addBook, /** Librarian functions*/
         markAttendance /** Student functions */ } = require('../controllers/postControllers')
 
@@ -29,7 +29,8 @@ Router.delete('/api/admin/removeUser', Authenticate, removeUser)
 //Router.post('/admin/report', Authenticate, forwardReport)
 
 /** professor routes */
-Router.post('/api/professor/curriculum', Authenticate, curriculum)
+Router.post('/api/professor/curriculum/addtopic', Authenticate, addTopic)
+Router.post('/api/professor/curriculum/removetopic', Authenticate, removeTopic)
 Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
 Router.post('/api/professor/attendance', Authenticate, generateAttendance)
 Router.post('/api/professor/events', Authenticate, addEvent)

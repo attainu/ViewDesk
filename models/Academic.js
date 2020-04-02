@@ -3,11 +3,12 @@ const Schema = mongoose.Schema
 
 // Curriculum Schema
 const TopicSchema = new Schema({
-    topic: { type: String, required: [true, 'Topic name required'] },
-    tag: { type: String, default: 'common' }
+    subject: { type: String, required: [true, 'Topic name required'] },
+    branch: { type: String, required: [true, 'Branch required'] },
+    sem: { type: Number, required: [true, 'Semester required'] },
+    time: { type: Date, default: Date.now() }
 })
 
-/** Add schema.pre() to check duplicate topic entry */
 
 const MarksheetSchema = new Schema({
     /**
@@ -46,5 +47,6 @@ let Curriculum = mongoose.model('curriculum', TopicSchema)
 let Marksheet = mongoose.model('marksheet', MarksheetSchema)
 let Timetable = mongoose.model('timetable', TimetableSchema)
 
+Curriculum.syncIndexes()
 // exporting Model
 module.exports = { Curriculum, Marksheet, Timetable }

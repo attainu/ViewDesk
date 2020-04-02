@@ -108,35 +108,38 @@ controllers.removeUser = (req, res) => {
 
 
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
-controllers.curriculum = (req, res) => {
+controllers.addTopic = (req, res) => {
 
-    // Adding topic to the curriculum
-    let topic = new Curriculum(req.body)
-    topic.save()
-        .then(result => {
-            if (result)
-                res.json({ status: true, message: 'topic added to curriculum' })
+    // request body
+    let subject = req.body
+
+    // saving subject to curriculum
+    let newTopic = new Curriculum(subject)
+    newTopic.save()
+        .then(response => {
+
+            if (response)
+                res.json({ status: true, message: `Added to ${response.branch} Curriculum` })
             else
-                res.json({ status: false, message: 'failed to add topic' })
+                res.json({ status: false, message: 'Fail to add topic' })
         })
-        .catch(err => res.json({ status: false, message: 'failed to add topic', Error: `${err}` }))
+        .catch(err => res.json({ status: false, err }))
+}
+
+controllers.removeTopic = (req, res) => {
+    res.json('remove topic')
+
+
 }
 
 controllers.createMarksheet = (req, res) => {
-    /**
-     * Aletration needed
-     * pass a list of registered students along with JSON response,
-     * this would be easier for professor to get student names.
-     */
+    
+
 }
 
-/** need to be done
- * after google calendar integration
- */
 controllers.addEvent = (req, res) => {
     res.json('Add Event')
 }
-
 
 controllers.generateAttendance = (req, res) => {
 
@@ -307,7 +310,6 @@ controllers.forgotPassword = (req, res) => {
         })
     //.catch(err => res.json({ status: false, message: 'User Not Found', error: err }))
 }
-
 
 controllers.setForgotPassword = (req, res) => {
 
