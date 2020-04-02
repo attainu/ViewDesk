@@ -21,9 +21,9 @@ Router.post('/api/login', login)
 
 /** Admin routes */
 Router.post('/api/admin/addUser', Authenticate, addUser)
-Router.post('/api/admin/password/reset', Authenticate, resetPassword)
-Router.post('/api/admin/password/forgot', Authenticate, forgotPassword)
-Router.post('/api/admin/password/:token', Authenticate, setForgotPassword)
+Router.post('/api/admin/resetpassword', Authenticate, resetPassword)
+Router.post('/api/admin/forgotpassword', Authenticate, forgotPassword)
+Router.post('/api/admin/forgotpassword/:token', Authenticate, setForgotPassword)
 Router.delete('/api/admin/removeUser', Authenticate, removeUser)
 
 //Router.post('/admin/report', Authenticate, forwardReport)

@@ -62,7 +62,7 @@ const StudentSchema = new Schema({
 })
 
 const PasswordResetSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'user' },
+    userId: { type: Schema.Types.ObjectId, ref: 'user' },
     token: { type: String, required: [true, 'password token link required'] },
     date: { type: Date, default: Date.now() }
 })

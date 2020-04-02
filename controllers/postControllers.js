@@ -33,7 +33,7 @@ controllers.register = (req, res) => {
     }
 
     // adding user to DB
-    let newUser = new User({ ...userObj })
+    let newUser = new User(userObj)
     newUser.save()
         .then(credentials => {
             if (credentials)
@@ -111,7 +111,7 @@ controllers.removeUser = (req, res) => {
 controllers.curriculum = (req, res) => {
 
     // Adding topic to the curriculum
-    let topic = new Curriculum(...req.body)
+    let topic = new Curriculum(req.body)
     topic.save()
         .then(result => {
             if (result)
@@ -159,7 +159,7 @@ controllers.generateAttendance = (req, res) => {
     }
 
     // storing attendance link info in DB
-    let newLink = new AttendanceLink(...linkInfo)
+    let newLink = new AttendanceLink(linkInfo)
     newLink.save()
         .then(result => {
             if (result)
@@ -178,7 +178,7 @@ controllers.addBook = (req, res) => {
      * Schema:- ISBN, name, topic, category,
      */
     let bookData = req.body
-    let newBook = new Library(...bookData)
+    let newBook = new Library(bookData)
     newBook.save()
         .then(confirmation => {
             if (confirmation)
@@ -266,14 +266,14 @@ controllers.forgotPassword = (req, res) => {
 
     const userEmail = req.body.email
 
-    // getting requrest token
+    // getting request token
     const data = reqTokenDecoder(req)
-    
-    User.findById('5e8465758469ba1a9c3c5834')
+
+    User.findById(data.id)
         .then(doc => {
 
             // comparing user email
-            if (doc.email === userEmail) {
+            if (doc.email == userEmail) {
 
                 // user payload
                 let userInfo = {
@@ -286,10 +286,11 @@ controllers.forgotPassword = (req, res) => {
                 // generating password reset token & storing it in DB for further validation
                 const token = jwt.sign(userInfo, process.env.JWT_KEY, { expiresIn: '10m' })
                 let info = {
-                    user: doc.id,
+                    userId: doc.id,
                     token: token
                 }
-                let newToken = new PasswordReset(...info)
+
+                let newToken = new PasswordReset(info)
                 newToken.save()
 
                 // password reset link
@@ -297,14 +298,14 @@ controllers.forgotPassword = (req, res) => {
                 // mail this link to registered email using nodemailer
 
 
-                /**----delete this code after setting nodemailer----*/
+                /**----DELETE this code after setting nodemailer----*/
                 res.json({ status: true, message: 'Reset token generated', token: token })
                 //---------------------------------------------------
             }
             else
                 res.json({ status: false, message: 'Can not generate reset link. Enter registered email address' })
         })
-        .catch(err => res.json({ status: false, message: 'User Not Found', error: err }))
+    //.catch(err => res.json({ status: false, message: 'User Not Found', error: err }))
 }
 
 
@@ -316,12 +317,13 @@ controllers.setForgotPassword = (req, res) => {
     // getting request headers
     const data = reqTokenDecoder(req)
 
-    const token = req.body.query
+    const token = req.params.token
 
     // finding token in DB
-    PasswordReset.findOne({ _id: data.id })
+    PasswordReset.findOne({ userId: data.id })
         .then(doc => {
-
+            console.log(doc.token)
+            console.log(token)
             // comparing the sent token with saved one
             if (doc.token == token) {
 
@@ -344,7 +346,7 @@ controllers.setForgotPassword = (req, res) => {
             else
                 res.json({ status: false, message: 'link tempered' })
         })
-        .catch(err => res.json({ status: false, message: 'reset link not found' }))
+        .catch(err => res.json({ status: false, message: 'reset link not found', error: err }))
 }
 
 // exporting module

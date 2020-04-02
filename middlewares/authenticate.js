@@ -29,9 +29,9 @@ let Authenticate = (req, res, next) => {
                 next()
             else res.json({ status: false, message: `Protected route. Only ${user} access` })
         }
-        else res.json({ status: false, message: 'Token Expired' })
+        else res.json({ status: false, message: 'Request Token Expired' })
     }
-    else res.status(403).json({ status: false, message: 'Token not found' })
+    else res.status(403).json({ status: false, message: 'request Token not found' })
 }
 
 module.exports = Authenticate
