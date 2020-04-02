@@ -29,8 +29,8 @@ Router.delete('/api/admin/removeUser', Authenticate, removeUser)
 //Router.post('/admin/report', Authenticate, forwardReport)
 
 /** professor routes */
-Router.post('/api/professor/curriculum/addtopic', Authenticate, addTopic)
-Router.post('/api/professor/curriculum/removetopic', Authenticate, removeTopic)
+Router.post('/api/professor/curriculum/add', Authenticate, addTopic)
+Router.delete('/api/professor/curriculum/remove', Authenticate, removeTopic)
 Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
 Router.post('/api/professor/attendance', Authenticate, generateAttendance)
 Router.post('/api/professor/events', Authenticate, addEvent)

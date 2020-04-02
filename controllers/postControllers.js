@@ -1,8 +1,5 @@
 /** database modules */
 
-// TESTING CODE
-const mongoose = require('mongoose')
-//-----------
 require('../models/DB')
 const { User, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
@@ -25,15 +22,8 @@ controllers.register = (req, res) => {
     // getting user details from requrest body
     const user = req.body
 
-    let userObj = {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        role: user.role
-    }
-
     // adding user to DB
-    let newUser = new User(userObj)
+    let newUser = new User(user)
     newUser.save()
         .then(credentials => {
             if (credentials)
@@ -67,7 +57,7 @@ controllers.login = (req, res) => {
                         }
 
                         // generating token
-                        const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '1h' })
+                        const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '24h' })
 
                         res.json({ status: true, message: 'Login Successfull', user: user.role, token: token })
                     }
@@ -110,7 +100,7 @@ controllers.removeUser = (req, res) => {
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
 controllers.addTopic = (req, res) => {
 
-    // request body
+    // subject info
     let subject = req.body
 
     // saving subject to curriculum
@@ -127,13 +117,25 @@ controllers.addTopic = (req, res) => {
 }
 
 controllers.removeTopic = (req, res) => {
-    res.json('remove topic')
 
+    // user data from request token
+    const data = reqTokenDecoder(req)
 
+    // data from request body
+    const subject = req.body.subject
+    const sem = req.body.sem
+
+    Curriculum.findOneAndDelete({ subject: subject, sem: sem, branch: data.branch }, (err, response) => {
+
+        if (err)
+            res.json({ status: false, message: 'Subject not deleted', err })
+        else
+            res.json({ status: false, message: 'Subject deleted form curriculum' })
+    })
 }
 
 controllers.createMarksheet = (req, res) => {
-    
+
 
 }
 

@@ -4,13 +4,14 @@ const Schema = mongoose.Schema
 
 
 const UserSchema = new Schema({
-    name: { type: String, required: [true, 'Name required'] },
-    email: { type: String, required: [true, 'Email required'] },
+    name: { type: String, required: [true, 'Name required'], trim: true },
+    email: { type: String, required: [true, 'Email required'], trime: true },
     password: { type: String, required: [true, 'password required'] },
-    role: { type: String, required: [true, 'role required'] },
-    branch: { type: String, default: 'common' },
+    role: { type: String, required: [true, 'role required'], enum: ['admin', 'professor', 'librarian', 'student', 'common'] },
+    branch: { type: String, required: [true, 'branch required'], enum: ['ME', 'CE', 'EE', 'IT', 'CSE', 'ECE', 'EEE', 'admin', 'lib'] },
     createdAt: { type: Date, default: Date.now() }
-})
+},
+    { timestamps: true })
 
 // password hashing middleware
 UserSchema.pre('save', function (next) {
@@ -34,14 +35,12 @@ UserSchema.pre('save', function (next) {
 
 const AdminSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
-    branch: { type: String },
     profile_pic: { type: String },
     contact_no: { type: Number }
 })
 
 const ProfessorSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
-    branch: { type: String },
     profile_pic: { type: String },
     contact_no: { type: Number }
 })
@@ -63,7 +62,7 @@ const StudentSchema = new Schema({
 
 const PasswordResetSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'user' },
-    token: { type: String, required: [true, 'password token link required'] },
+    token: { type: String, required: [true, 'password token required'], trim: true },
     date: { type: Date, default: Date.now() }
 })
 
@@ -76,5 +75,7 @@ let Professor = mongoose.model('professor', ProfessorSchema)
 let Librarian = mongoose.model('librarian', LibrarianSchema)
 let Student = mongoose.model('student', StudentSchema)
 let PasswordReset = mongoose.model('passwordRest', PasswordResetSchema)
+
+User.syncIndexes()
 
 module.exports = { User, Admin, Professor, Librarian, Student, PasswordReset }
