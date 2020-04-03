@@ -20,7 +20,8 @@ Router.post('/api/register', register)
 Router.post('/api/login', login)
 
 /** Admin routes */
-Router.post('/api/admin/addUser', Authenticate, addUser)
+Router.get('/api/professor/add/:user', Authenticate, addUser)
+Router.get('/api/professor/remove/:user', Authenticate, removeUser)
 Router.post('/api/admin/resetpassword', Authenticate, resetPassword)
 Router.post('/api/admin/forgotpassword', Authenticate, forgotPassword)
 Router.post('/api/admin/forgotpassword/:token', Authenticate, setForgotPassword)

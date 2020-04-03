@@ -40,27 +40,6 @@ controllers.AdminProfile = (req, res) => {
         .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
-controllers.classroom = (req, res) => {
-    res.json('All Classrooms')
-}
-
-controllers.marksheet = (req, res) => {
-
-
-    let branch = req.params.branch
-    let email = req.query.email
-    let query = { branch: branch, email: email }
-    Marksheet.find(query)
-        .then(marksheet => {
-            if (marksheet)
-                res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
-            else
-                res.json({ status: true, message: 'Marksheet Not found', })
-        })
-        .catch(err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
-}
-
-
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
 controllers.professorProfile = (req, res) => {
 
@@ -249,6 +228,22 @@ controllers.studentForum = (req, res) => {
 }
 
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
+controllers.marksheet = (req, res) => {
+
+
+    let branch = req.params.branch
+    let email = req.query.email
+    let query = { branch: branch, email: email }
+    Marksheet.find(query)
+        .then(marksheet => {
+            if (marksheet)
+                res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
+            else
+                res.json({ status: true, message: 'Marksheet Not found', })
+        })
+        .catch(err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
+}
+
 controllers.calendar = (req, res) => {
     res.json('calender')
 }
