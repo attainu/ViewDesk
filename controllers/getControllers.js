@@ -7,7 +7,7 @@ const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 /** */
 const jwt = require('jsonwebtoken')
 const axios = require('axios')
-const reqTokenDecoder = require('../utils/reqTokenDecoder') // utility function
+const reqTokenDecoder = require('../utils/reqTokenDecoder')
 require('dotenv').config()
 
 let controllers = {}

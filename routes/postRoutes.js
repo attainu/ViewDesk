@@ -9,7 +9,7 @@ const { register, login, resetPassword, forgotPassword, setForgotPassword,/** co
 
 /**
  * NOTE:-
- * add RESET & FORGOT password route to all users
+ * add RESET & FORGOT password route
  * add REMOVE USER route to Admin
  * add EDIT marksheet route to Professor
  * add REMOVE BOOK route to Librarian
@@ -20,8 +20,8 @@ Router.post('/api/register', register)
 Router.post('/api/login', login)
 
 /** Admin routes */
-Router.post('/api/admin/add/:user', Authenticate, addUser)
-Router.delete('/api/admin/remove/:user', Authenticate, removeUser)
+Router.post('/api/admin/adduser/:branch/:role', Authenticate, addUser)
+Router.delete('/api/admin/removeuser/:branch/:role', Authenticate, removeUser)
 Router.post('/api/admin/resetpassword', Authenticate, resetPassword)
 Router.post('/api/admin/forgotpassword', Authenticate, forgotPassword)
 Router.post('/api/admin/setforgotpassword/:token', Authenticate, setForgotPassword)

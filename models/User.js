@@ -7,8 +7,8 @@ const UserSchema = new Schema({
     name: { type: String, required: [true, 'Name required'] },
     email: { type: String, required: [true, 'Email required'], trime: true },
     password: { type: String, required: [true, 'password required'] },
-    role: { type: String, required: [true, 'role required'], enum: ['professor', 'librarian', 'student', 'admin', 'common'] },
-    branch: { type: String, required: [true, 'branch required'], enum: ['ME', 'CE', 'EE', 'IT', 'CSE', 'ECE', 'EEE', 'NTS', 'admin'] },
+    role: { type: String, required: [true, 'role required'], enum: ['admin', 'professor', 'librarian', 'student'] },
+    branch: { type: String, required: [true, 'branch required'], enum: ['ME', 'CE', 'EE', 'IT', 'CSE', 'ECE', 'EEE', 'NTS', 'ADMIN'] },
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })

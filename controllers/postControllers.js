@@ -3,7 +3,7 @@
 require('../models/DB')
 const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
-const { AttendanceLink } = require('../models/Attendance')
+const { AttendanceLink } = require('../models/Link')
 const { Curriculum, Result } = require('../models/Academic')
 
 /** packages & modules */
@@ -71,29 +71,54 @@ controllers.login = (req, res) => {
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
 controllers.addUser = (req, res) => {
-    /**
-    * alteration needed
-    * need to create another schema for other users
-    */
 
-    // adding user to DB
-    let user = new User({ ...req.body })
-    user.save()
-        .then(created => {
-            if (created)
-                res.json({ status: true, message: 'Registration Successfull' })
-            else
-                res.json({ status: false, message: 'Registration Failed' })
-        })
-        .catch(err => res.json({ status: false, message: 'Registration Failed', Error: `${err}` }))
+    // getting user type from params
+    const params = req.params
+
+    // getting user details from request body
+    const user = req.body
+
+    // user credentials & details
+    let userObj = {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        role: params.role,
+        branch: params.branch
+    }
+
+    // saving user in DB
+    let newUser = new User(userObj)
+    newUser.save((err, response) => {
+
+        if (err) return res.json({ status: false, err })
+        if (response) {
+            console.log(user)// for testing 
+
+            // send login details to registered email address using NODEMAILER
+
+            res.json({ status: true, message: 'User added successfully & Credentials sent to registered Email addresss' })
+        }
+    })
 }
 
 
 controllers.removeUser = (req, res) => {
-    /**
-     * to be completed.
-     */
-    res.json('Remove User')
+    res.json('remove user')
+/**
+    // getting user type from params
+    const params = req.params
+
+    // getting user details from request body
+    const user = req.body
+
+    // find & deleting user
+    User.findByIdAndDelete(user._id, (err, response) => {
+
+        if (err) return res.json({ status: false, err })
+        if (response) return res.json({ status: true, message: 'User Removed Successfully' })
+    })
+*/
 }
 
 
@@ -152,7 +177,7 @@ controllers.createMarksheet = (req, res) => {
     const { stdId: _id, grade, marks } = req.body
 
     User.findOne({ _id }, async (error, student) => {
-        
+
         console.log(student)
         //student.author = author;
         //console.log(story.author.name); // prints "Ian Fleming"

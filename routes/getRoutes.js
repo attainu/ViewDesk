@@ -15,7 +15,7 @@ Router.get('/api/admin/calendar', Authenticate, calendar)
 
 /** professor routes */
 Router.get('/api/professor/profile', Authenticate, professorProfile)
-Router.get('/api/professor/students', Authenticate, students)
+//Router.get('/api/professor/students', Authenticate, students) fix this route in Professor branch
 Router.get('/api/professor/curriculum/:branch', Authenticate, curriculum)
 Router.get('/api/professor/calendar', Authenticate, calendar)
 Router.get('/api/professor/forum', Authenticate, professorForum)
