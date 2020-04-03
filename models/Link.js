@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const AttendanceSchema = new Schema({
+const AttendanceLinkSchema = new Schema({
     token: { type: String, required: [true, 'Attendance link required'] },
     branch: { type: String, required: [true, 'branch name required'] },
     createdBy: { type: Schema.Types.ObjectId, required: [true, 'creator _id required'] },
@@ -16,7 +16,7 @@ const PasswordResetSchema = new Schema({
 },
     { timestamps: true })
 
-let Attendance = mongoose.model('attendance', AttendanceSchema)
+let AttendanceLink = mongoose.model('attendance', AttendanceLinkSchema)
 let PasswordReset = mongoose.model('passwordRest', PasswordResetSchema)
 
-module.exports = { Attendance, PasswordReset }
+module.exports = { AttendanceLink, PasswordReset }
