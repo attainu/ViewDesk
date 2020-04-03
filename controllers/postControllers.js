@@ -1,7 +1,7 @@
 /** database modules */
 
 require('../models/DB')
-const { User, Student, PasswordReset } = require('../models/User')
+const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
 const { AttendanceLink } = require('../models/Attendance')
 const { Curriculum, Result } = require('../models/Academic')
