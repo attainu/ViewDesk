@@ -31,8 +31,8 @@ Router.delete('/api/admin/removeUser', Authenticate, removeUser)
 /** professor routes */
 Router.post('/api/professor/curriculum/add', Authenticate, addTopic)
 Router.delete('/api/professor/curriculum/remove', Authenticate, removeTopic)
-Router.post('/api/professor/marksheet', Authenticate, createMarksheet)
-Router.post('/api/professor/attendance', Authenticate, generateAttendance)
+Router.post('/api/professor/addmarksheet', Authenticate, createMarksheet)
+Router.post('/api/professor/attendance:branch', Authenticate, generateAttendance)
 Router.post('/api/professor/events', Authenticate, addEvent)
 
 /** librarina routes */

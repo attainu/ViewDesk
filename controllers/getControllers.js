@@ -1,6 +1,6 @@
 // Database Modules
 require('../models/DB')
-const { User, PasswordReset } = require('../models/User')
+const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
 const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 
@@ -103,8 +103,19 @@ controllers.curriculum = (req, res) => {
         .catch(error => res.json({ status: false, error }))
 }
 
-controllers.calendar = (req, res) => {
-    res.json('Calendar')
+controllers.students = (req, res) => {
+
+    // getting user info from the request token
+    let user = reqTokenDecoder(req)
+
+    // find students
+    User.find({ branch: user.branch }, (error, result) => {
+        if (err)
+            res.json({ status: false, error })
+        if (result)
+            res.json({ status: true, message: `All Students of ${user.branch} found`, students: result })
+    })
+
 }
 
 controllers.professorForum = (req, res) => {

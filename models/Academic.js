@@ -16,50 +16,51 @@ const MarksheetSchema = new Schema({
      * or add _id instead of stdEmail to keep it unique 
      * this would better for duplicate check.
     */
-    name: { type: Schema.Types.ObjectId, required: [true, 'Student name required'], ref: 'user' }, // <= get email, branch from user object
     exam: { type: String, required: [true, 'Exam name required'] },
-    grade: { type: String, required: [true, 'Grade required'] },
+    grade: { type: String, required: [true, 'Grade required'], enum: ['A', 'B', 'C', 'D', 'D#', 'F'] },
     marks: {
         sub1: {
-            type: Number, mini: 00,
+            type: Number,
             validate(marks) {
-                if (marks > 100)
-                    Error('Maximum marks: 100')
+                if (marks < 0 && marks > 100)
+                    Error('Mini: 00 and Max: 100')
             }
         },
 
         sub2: {
-            type: Number, mini: 00,
+            type: Number,
             validate(marks) {
-                if (marks > 100)
-                    Error('Maximum marks: 100')
+                if (marks < 0 && marks > 100)
+                    Error('Mini: 00 and Max: 100')
             }
         },
 
         sub3: {
-            type: Number, mini: 00,
+            type: Number,
             validate(marks) {
-                if (marks > 100)
-                    Error('Maximum marks: 100')
+                if (marks < 0 && marks > 100)
+                    Error('Mini: 00 and Max: 100')
             }
         },
 
         sub4: {
-            type: Number, mini: 00,
+            type: Number,
             validate(marks) {
-                if (marks > 100)
-                    Error('Maximum marks: 100')
+                if (marks < 0 && marks > 100)
+                    Error('Mini: 00 and Max: 100')
             }
         },
 
         sub5: {
-            type: Number, mini: 00,
+            type: Number,
             validate(marks) {
-                if (marks > 100)
-                    Error('Maximum marks: 100')
+                if (marks < 0 && marks > 100)
+                    Error('Mini: 00 and Max: 100')
             }
         }
     },
+
+    date: { type: Date, default: Date.now() }
 },
     { timestamps: true })
 
@@ -75,9 +76,9 @@ const TimetableSchema = new Schema({
     { timestamps: true })
 
 let Curriculum = mongoose.model('curriculum', TopicSchema)
-let Marksheet = mongoose.model('marksheet', MarksheetSchema)
+let Result = mongoose.model('marksheet', MarksheetSchema)
 let Timetable = mongoose.model('timetable', TimetableSchema)
 
 Curriculum.syncIndexes()
 // exporting Model
-module.exports = { Curriculum, Marksheet, Timetable }
+module.exports = { Curriculum, Result, Timetable }

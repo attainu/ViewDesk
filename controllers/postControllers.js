@@ -1,10 +1,10 @@
 /** database modules */
 
 require('../models/DB')
-const { User, PasswordReset } = require('../models/User')
+const { User, Student, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
 const { AttendanceLink } = require('../models/Attendance')
-const { Curriculum, Marksheet } = require('../models/Academic')
+const { Curriculum, Result } = require('../models/Academic')
 
 /** packages & modules */
 const jwt = require('jsonwebtoken')
@@ -136,7 +136,27 @@ controllers.removeTopic = (req, res) => {
 
 controllers.createMarksheet = (req, res) => {
 
+    /**let marksheet = req.body
 
+    let newMarsheet = new Result(marksheet)
+    newMarsheet.save()
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Marksheet added successfully' })
+            else
+                res.json({ status: false, message: 'Fail to add Marsheet' })
+        })
+        .catch(err => res.json({ status: false, err }))*/
+
+
+    const { stdId: _id, grade, marks } = req.body
+
+    User.findOne({ _id }, async (error, student) => {
+        
+        console.log(student)
+        //student.author = author;
+        //console.log(story.author.name); // prints "Ian Fleming"
+    });
 }
 
 controllers.addEvent = (req, res) => {
@@ -144,35 +164,7 @@ controllers.addEvent = (req, res) => {
 }
 
 controllers.generateAttendance = (req, res) => {
-
-    /**
-     * its a BETA version, modification needed.
-     */
-
-    // for which branch attendance need to be created
-    let branch = req.params.branch
-
-    // fetching user's info from request token
-    const data = reqTokenDecoder()
-    const link = jwt.sign(data, process.env.JWT_KEY, { expiresIn: '10m' })
-
-    // Attendance link info
-    let linkInfo = {
-        link: link,
-        branch: branch,
-        createdBy: user.id,
-    }
-
-    // storing attendance link info in DB
-    let newLink = new AttendanceLink(linkInfo)
-    newLink.save()
-        .then(result => {
-            if (result)
-                res.json({ status: true, message: 'Attendance created!' })
-            else
-                res.json({ status: false, message: 'Attendance not created' })
-        })
-        .catch(err => res.json({ status: false, message: 'Fail to create Attendance', error: err }))
+    res.json('Generate attendance')
 }
 
 

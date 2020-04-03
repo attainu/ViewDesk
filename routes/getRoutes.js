@@ -2,7 +2,7 @@ let Router = require('express').Router()
 const  Authenticate = require('../middlewares/authenticate')
 
 const { AdminProfile, classroom, marksheet, /** Admin controllers */
-        professorProfile, professorForum, /** Professor controllers */
+        professorProfile, professorForum, students, /** Professor controllers */
         librarianProfile, issueBook, issueRecord, libForum, /** Librarian controllers */
         studentProfile, timetable, progress, issuedBooks, studentForum, /**  Student controllers */
         calendar, curriculum, /** Common controllers */ } = require('../controllers/getControllers')
@@ -16,6 +16,7 @@ Router.get('/api/admin/calendar', Authenticate, calendar)
 
 /** professor routes */
 Router.get('/api/professor/profile', Authenticate, professorProfile)
+Router.get('/api/professor/students', Authenticate, students)
 Router.get('/api/professor/curriculum/:branch', Authenticate, curriculum)
 Router.get('/api/professor/calendar', Authenticate, calendar)
 Router.get('/api/professor/forum', Authenticate, professorForum)

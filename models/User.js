@@ -57,7 +57,8 @@ const StudentSchema = new Schema({
     profile_pic: { type: String },
     contact_no: { type: Number },
     parent_email: { type: String },
-    parent_contact_no: { type: Number }
+    parent_contact_no: { type: Number },
+    marksheets: [{ type: Schema.Types.ObjectId, ref: 'marksheet' }]
 })
 
 const PasswordResetSchema = new Schema({
