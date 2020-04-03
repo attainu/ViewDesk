@@ -10,7 +10,7 @@ const { AdminProfile, classroom, marksheet, /** Admin controllers */
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, AdminProfile)
-Router.get('/api/admin/classroom', Authenticate, classroom) // optional
+
 Router.get('/api/admin/marksheet', Authenticate, marksheet)
 Router.get('/api/admin/calendar', Authenticate, calendar)
 
