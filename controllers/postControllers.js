@@ -89,36 +89,33 @@ controllers.addUser = (req, res) => {
 
     // saving user in DB
     let newUser = new User(userObj)
-    newUser.save((err, response) => {
-
-        if (err) return res.json({ status: false, err })
-        if (response) {
-            console.log(user)// for testing 
-
-            // send login details to registered email address using NODEMAILER
+    newUser.save()
+        .then(response => {
+            console.log(response)
+            // send login details to registered email address using NODEMAILER <= IMPORTANT
 
             res.json({ status: true, message: 'User added successfully & Credentials sent to registered Email addresss' })
-        }
-    })
+        })
+        .catch(err => res.json({ status: true, err }))
 }
 
 
 controllers.removeUser = (req, res) => {
     res.json('remove user')
-/**
-    // getting user type from params
-    const params = req.params
-
-    // getting user details from request body
-    const user = req.body
-
-    // find & deleting user
-    User.findByIdAndDelete(user._id, (err, response) => {
-
-        if (err) return res.json({ status: false, err })
-        if (response) return res.json({ status: true, message: 'User Removed Successfully' })
-    })
-*/
+    /**
+        // getting user type from params
+        const params = req.params
+    
+        // getting user details from request body
+        const user = req.body
+    
+        // find & deleting user
+        User.findByIdAndDelete(user._id, (err, response) => {
+    
+            if (err) return res.json({ status: false, err })
+            if (response) return res.json({ status: true, message: 'User Removed Successfully' })
+        })
+    */
 }
 
 
