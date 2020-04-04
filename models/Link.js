@@ -3,8 +3,8 @@ const Schema = mongoose.Schema
 
 const AttendanceLinkSchema = new Schema({
     token: { type: String, required: [true, 'Attendance link required'] },
-    branch: { type: String, required: [true, 'branch name required'] },
-    createdBy: { type: Schema.Types.ObjectId, required: [true, 'creator _id required'] },
+    classroom: { type: String, required: [true, 'classroom name required'], ref: 'classroom'},
+    createdBy: { type: Schema.Types.ObjectId, required: [true, 'creator _id required'], ref: 'professor' },
     date: { type: Date, default: Date.now() }
 },
     { timestamps: true })

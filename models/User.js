@@ -36,6 +36,7 @@ UserSchema.pre('save', function (next) {
 // Admin details
 const AdminSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
+    classrooms: [{ type: Schema.Types.ObjectId, ref: 'classroom' }],
     profile_pic: { type: String, default: null },
     contact_no: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now() }
@@ -45,6 +46,7 @@ const AdminSchema = new Schema({
 // Professor details
 const ProfessorSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
+    classrooms: { type: Schema.Types.ObjectId, ref: 'classroom' },
     profile_pic: { type: String, default: null },
     contact_no: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now() }
@@ -63,13 +65,14 @@ const LibrarianSchema = new Schema({
 // Student details
 const StudentSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'user' },
+    classrooms: { type: Schema.Types.ObjectId, ref: 'classroom' },
+    marksheets: [{ type: Schema.Types.ObjectId, default: null, ref: 'marksheet' }],
     batch: { type: String },
     profile_pic: { type: String, default: null },
     contact_no: { type: Number, default: null },
     parent_email: { type: String, default: null },
     parent_contact_no: { type: Number, default: null },
     createdAt: { type: Date, default: Date.now() },
-    marksheets: [{ type: Schema.Types.ObjectId, default: null, ref: 'marksheet' }]
 },
     { timestamps: true })
 

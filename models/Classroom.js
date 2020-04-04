@@ -3,8 +3,9 @@ const Schema = mongoose.Schema
 
 const ClassroomSchema = new Schema({
     className: { type: String },
-    professors: [{ type: Schema.Types.ObjectId, default: null, ref: 'professor' }],
-    students: [{ type: Schema.Types.ObjectId, default: null, ref: 'student' }],
+    admin: { type: Schema.Types.ObjectId, ref: 'admin' },
+    professors: [{ type: Schema.Types.ObjectId, ref: 'professor' }],
+    students: [{ type: Schema.Types.ObjectId, ref: 'student' }],
     date: { type: Date, default: Date.now() },
 },
     { timestamps: true })

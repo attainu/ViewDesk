@@ -3,19 +3,19 @@ const Schema = mongoose.Schema
 
 // Add Book Schema
 const AddBook = new Schema({
-    img: { type: String, required: [true, 'image URL / address required.'] },
+    coverUrl: { type: String, required: [true, 'cover URL required.'] },
     ISBN: { type: String, required: [true, 'ISBN required'], trim: true },
     name: { type: String, required: [true, 'Book name required'] },
     topic: { type: String, required: [true, 'Book topic required'] },
     category: { type: String, required: [true, 'Book Category required'] },
     issued: { type: Boolean, default: false },
-    issuedTo: { type: String, default: null },
-
+    issuedTo: { type: Schema.Types.ObjectId, ref: 'user' },
+    issuedBy: { type: Schema.Types.ObjectId, ref: 'librarian'}
 })
 
 /** add middleware to validate ISBN */
 AddBook.pre('save', function (next) {
-    
+
     next()
     /** variables */
     /**let ISBN = this.toUpperCase()
