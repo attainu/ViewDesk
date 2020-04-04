@@ -1,34 +1,35 @@
 const nodemailer = require('nodemailer')
 require('dotenv')
 
-let mailer = (mailOptions) => {
+// nodemailer function
+let mailer = (message, reciever) => {
 
-    // Create a Transport instance using nodemailer
-    sails.log.debug('try to send mail');
-    let smtpTransport = nodemailer.createTransport("SMTP", {
-        service: "Gmail",
+    // creating transport
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
         auth: {
-            XOAuth2: {
-                user: process.env.FROM_EMAIL, // Your gmail address.
-                clientId: "634698684173-6982arb7410768jp6cdaqug9o4njrt0n.apps.googleusercontent.com",
-                clientSecret: "UFYowYDk55286EESP14TVJN4",
-                refreshToken: "1//04mVF98io6qHICgYIARAAGAQSNwF-L9IrYEy7wPfAMYK-DfqqOudWns7QpqNY_3xTlJMFZFFkf8mq0cibf3dmK5gjZ634wssOsoA"
-            }
+            user: process.env.GMAIL,
+            pass: process.env.GMAIL_PASS
         }
-    });
+    })
+
+    // mail options
+    let mailOptions = {
+        from: 'View Desk',
+        to: reciever,
+        subject: 'Sending Email using Node.js',
+        text: message,
+        //html: send msg as HTML
+    }
 
     // send mail
-    smtpTransport.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            sails.log.debug(error);
-            return res.json({ status: 'false', msg: 'Email sending failed' })
-        }
-        else {
-            console.log('Message %s sent: %s', info.messageId, info.response);
-            return res.json({ status: true, message: 'Email sent successfully' })
-        }
-        //smtpTransport.close();
-    });
+    transporter.sendMail(mailOptions, function (err, info) {
+        if (err)
+            console.log({ status: false, err })
+        else
+            console.log({ status: true, message: `Email sent to ${mailOptions.to}`, response: info.message })
+    })
 }
 
 module.exports = mailer
+
