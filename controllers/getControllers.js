@@ -248,6 +248,13 @@ controllers.calendar = (req, res) => {
     res.json('calender')
 }
 
+controllers.professors = (req, res) => {
+    res.json('All professor list')
+}
+
+controllers.students = (req, res) => {
+    res.json('All students list')
+}
 
 //exporting module
 module.exports = controllers

@@ -5,11 +5,13 @@ const { AdminProfile, /** Admin controllers */
         professorProfile, professorForum, /** Professor controllers */
         librarianProfile, issueBook, issueRecord, libForum, /** Librarian controllers */
         studentProfile, timetable, progress, issuedBooks, studentForum, /**  Student controllers */
-        calendar, marksheet, curriculum, /** Common controllers */ } = require('../controllers/getControllers')
+        students, professors, calendar, marksheet, curriculum, /** Common controllers */ } = require('../controllers/getControllers')
 
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, AdminProfile)
+Router.get('/api/admin/students', Authenticate, students)
+Router.get('/api/admin/professors', Authenticate, professors)
 Router.get('/api/admin/marksheet', Authenticate, marksheet)
 Router.get('/api/admin/calendar', Authenticate, calendar)
 
