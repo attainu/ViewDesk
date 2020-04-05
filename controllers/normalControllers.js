@@ -111,6 +111,8 @@ controllers.librarianProfile = (req, res) => {
 
     // finding user in DB
     User.findOne({ email: data.email, role: data.role })
+        .populate()
+        .exec()
         .then(user => {
             if (user)
                 //sending JSON response
@@ -131,16 +133,12 @@ controllers.librarianProfile = (req, res) => {
         .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
-controllers.issueBook = (req, res) => {
-    res.json('Issue Book')
-}
-
-controllers.issueRecord = (req, res) => {
+controllers.archiveRecord = (req, res) => {
     res.json('Issue Record')
 }
 
-controllers.libForum = (req, res) => {
-    res.json('librarian forum')
+controllers.getUsers = (req, res) => {
+    res.json('all users list')
 }
 
 /**---------------------------------------------------Student controllers----------------------------------------------------*/
