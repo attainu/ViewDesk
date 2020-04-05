@@ -4,10 +4,10 @@ const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
     name: { type: String, required: [true, 'Name required'] },
-    email: { type: String, required: [true, 'Email required'], trime: true },
+    email: { type: String, required: [true, 'Email required'], unique: true, trim: true },
     password: { type: String, required: [true, 'password required'] },
-    contact: { type: Number, requird: [true, 'contact number required'], unique: true },
-    role: { type: String, required: [true, 'role required'], enum: ['admin', 'professor', 'librarian', 'student'] },
+    contact: { type: String, default: null /*requird: [true, 'contact number required'], unique: true*/, trim: true },
+    role: { type: String, required: [true, 'role required'], enum: ['ADMIN', 'PROFESSOR', 'LIBRARIAN', 'STUDENT'] },
     branch: { type: String, required: [true, 'branch required'], enum: ['ME', 'CE', 'EE', 'IT', 'CSE', 'ECE', 'EEE', 'NTS', 'ADMIN'] },
     createdAt: { type: Date, default: Date.now() }
 },
@@ -34,7 +34,7 @@ UserSchema.pre('save', function (next) {
 })
 
 // Admin details
-const AdminSchema = new User({
+const AdminSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     classrooms: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Classroom' }],
     profile_picture: { type: String, default: null },
@@ -82,6 +82,7 @@ let Librarian = mongoose.model('Librarian', LibrarianSchema)
 let Student = mongoose.model('Student', StudentSchema)
 
 User.syncIndexes()
+
 
 // module export
 module.exports = { User, Admin, Professor, Librarian, Student }

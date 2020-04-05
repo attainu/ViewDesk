@@ -19,7 +19,9 @@ controllers.AdminProfile = (req, res) => {
     const data = reqTokenDecoder(req)
 
     // finding user in DB
-    User.findOne({ email: data.email, role: data.role })
+    User.findById(data.id)
+        .populate()
+        .exec()
         .then(user => {
             if (user)
                 //sending JSON response
@@ -30,8 +32,8 @@ controllers.AdminProfile = (req, res) => {
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        branch: 'Add branch here...'
-                        /** add more profile details here */
+                        branch: user.branch,
+                        contact: user.contact
                     }
                 })
             else
