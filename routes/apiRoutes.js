@@ -2,9 +2,9 @@ const Router = require('express').Router()
 const Authenticate = require('../middlewares/authenticate')
 
 const { register, login, resetPassword, forgotPassword, setForgotPassword,/** common functions */
-        addUser, removeUser, /** Admin functions*/
+        addUser, removeUser, issueBook, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
-        addBook, /** Librarian functions*/
+        addBook, removeBook, /** Librarian functions*/
         markAttendance /** Student functions */ } = require('../controllers/apiControllers')
 
 /**

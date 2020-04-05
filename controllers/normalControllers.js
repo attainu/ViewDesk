@@ -110,7 +110,7 @@ controllers.librarianProfile = (req, res) => {
     const data = reqTokenDecoder(req)
 
     // finding user in DB
-    User.findOne({ email: data.email, role: data.role })
+    User.findById(data.id)
         .populate()
         .exec()
         .then(user => {
@@ -123,7 +123,7 @@ controllers.librarianProfile = (req, res) => {
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        branch: 'Add branch here...'
+                        branch: user.branch
                         /** add more profile details here */
                     }
                 })
@@ -133,11 +133,60 @@ controllers.librarianProfile = (req, res) => {
         .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
-controllers.archiveRecord = (req, res) => {
-    res.json('Issue Record')
+controllers.viewBooks = (req, res) => {
+
+    // show all books available in Library
+    Library.find({})
+        .populate()
+        .exec()
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'available books', books: response })
+            else
+                res.json({ status: false, message: 'Books are not available' })
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
-controllers.getUsers = (req, res) => {
+controllers.searchBooks = (req, res) => {
+
+    res.json('find books')
+    /** how to make searching feature for books */
+}
+
+controllers.archiveRecord = (req, res) => {
+
+    // sorting the query to display ISSUED or AVAILABLE books
+    let query = {}
+    if (req.params !== undefined) {
+
+        const view = req.params.view
+
+        // setting for issued books
+        if (view.toLowerCase().trim() === 'issued')
+            query.issued = true
+
+        // setting for avialble books
+        else if (view.toLowerCase().trim() === 'available')
+            query.issued = false
+
+        /** NOTE: SEARCH
+         * how to find any issued book info
+         * ( to whom book got issued and by whom ) */
+    }
+
+    // searching for books
+    Library.find(query)
+        .populate()
+        .exec()
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'found books', books: response })
+        })
+        .catch(err => res.json({ status: false, err }))
+}
+
+controllers.viewUsers = (req, res) => {
     res.json('all users list')
 }
 

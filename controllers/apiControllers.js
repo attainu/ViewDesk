@@ -199,19 +199,24 @@ controllers.generateAttendance = (req, res) => {
 /**---------------------------------------------------Librarian controllers----------------------------------------------------*/
 controllers.addBook = (req, res) => {
 
-    /**
-     * Schema:- ISBN, name, topic, category,
-     */
-    let bookData = req.body
-    let newBook = new Library(bookData)
+    let book = req.body
+    let newBook = new Library(book)
     newBook.save()
-        .then(confirmation => {
-            if (confirmation)
-                res.json({ status: true, message: 'Book added to Library' })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book added successfully' })
             else
                 res.json({ status: false, message: 'Failed to add Book' })
         })
-        .catch(err => res.json({ status: false, message: 'Failed to add Book', Error: `${err}` }))
+        .catch(err => res.json({ status: false, message: 'Failed to add Book', err }))
+}
+
+controllers.removeBook = (req, res) => {
+    
+}
+
+controllers.issueBook = (req, res) => {
+    res.json('Issue Book')
 }
 
 

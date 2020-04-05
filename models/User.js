@@ -5,6 +5,7 @@ const Schema = mongoose.Schema
 const UserSchema = new Schema({
     name: { type: String, required: [true, 'Name required'] },
     email: { type: String, required: [true, 'Email required'], unique: true, trim: true },
+    username: { type: String, default: null, /* unique: true, trim: true */ },
     password: { type: String, required: [true, 'password required'] },
     contact: { type: String, default: null /*requird: [true, 'contact number required'], unique: true*/, trim: true },
     role: { type: String, required: [true, 'role required'], enum: ['ADMIN', 'PROFESSOR', 'LIBRARIAN', 'STUDENT'] },

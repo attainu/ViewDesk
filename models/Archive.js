@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 // Add Book Schema
-const AddBook = new Schema({
+const Book = new Schema({
     coverUrl: { type: String, default: null },// <= replace default: null with required: [true, 'cover URL required.']
-    ISBN: { type: String, required: [true, 'ISBN required'], trim: true, unique: true },
+    ISBN: { type: String, required: [true, 'ISBN required'], /*trim: true, unique: true*/ },
     name: { type: String, required: [true, 'Book name required'], trim: true },
     topic: { type: String, required: [true, 'Book topic required'], trim: true },
     category: { type: String, required: [true, 'Book Category required'], trim: true },
@@ -14,7 +14,7 @@ const AddBook = new Schema({
 })
 
 /** middleware to validate ISBN */
-AddBook.pre('save', function (next) {
+Book.pre('save', function (next) {
 
     next()
     /** variables */
@@ -25,6 +25,6 @@ AddBook.pre('save', function (next) {
     let n = 10*/
 })
 
-let Library = mongoose.model('Library', AddBook)
+let Library = mongoose.model('Library', Book)
 
 module.exports = Library
