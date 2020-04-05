@@ -5,7 +5,7 @@ const { register, login, resetPassword, forgotPassword, setForgotPassword,/** co
         addUser, removeUser, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
         addBook, /** Librarian functions*/
-        markAttendance /** Student functions */ } = require('../controllers/postControllers')
+        markAttendance /** Student functions */ } = require('../controllers/apiControllers')
 
 /**
  * NOTE:-

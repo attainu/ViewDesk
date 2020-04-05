@@ -1,7 +1,7 @@
 const express = require('express')
 const logger = require('morgan')
-const postRoutes = require('./routes/postRoutes')
-const getRoutes = require('./routes/getRoutes')
+const apiRoutes = require('./routes/apiRoutes')
+const normalRoutes = require('./routes/normalRoutes')
 
 require('dotenv').config()
 
@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000
 app.use(logger('dev'))
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
-app.use(postRoutes)
-app.use(getRoutes)
+app.use(apiRoutes)
+app.use(normalRoutes)
 
 app.listen(port, () => console.log(`Server: listening... on PORT ${port}`))

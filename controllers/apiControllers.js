@@ -26,14 +26,13 @@ controllers.register = (req, res) => {
     let newUser = new User(user)
     newUser.save()
         .then(credentials => {
-            if (credentials)
 
             /** IMPORTANT NOTE
              * send LOGIN credentials on registered email address
              * after user sucessfull registration
              */
 
-            let credentials = 
+            if (credentials)
                 res.json({ status: true, message: 'Registration Successfull' })
             else
                 res.json({ status: false, message: 'Registration Failed' })

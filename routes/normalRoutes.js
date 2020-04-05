@@ -5,7 +5,7 @@ const { AdminProfile, /** Admin controllers */
         professorProfile, professorForum, /** Professor controllers */
         librarianProfile, issueBook, issueRecord, libForum, /** Librarian controllers */
         studentProfile, timetable, progress, issuedBooks, studentForum, /**  Student controllers */
-        students, professors, calendar, marksheet, curriculum, /** Common controllers */ } = require('../controllers/getControllers')
+        students, professors, calendar, marksheet, curriculum, /** Common controllers */ } = require('../controllers/normalControllers')
 
 
 /** Admin routes */
