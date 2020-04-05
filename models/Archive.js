@@ -9,11 +9,11 @@ const AddBook = new Schema({
     topic: { type: String, required: [true, 'Book topic required'] },
     category: { type: String, required: [true, 'Book Category required'] },
     issued: { type: Boolean, default: false },
-    issuedTo: { type: Schema.Types.ObjectId, ref: 'user' },
-    issuedBy: { type: Schema.Types.ObjectId, ref: 'librarian'}
+    issuedTo: { type: Schema.Types.ObjectId, ref: 'User' },
+    issuedBy: { type: Schema.Types.ObjectId, ref: 'Librarian'}
 })
 
-/** add middleware to validate ISBN */
+/** middleware to validate ISBN */
 AddBook.pre('save', function (next) {
 
     next()
@@ -25,6 +25,6 @@ AddBook.pre('save', function (next) {
     let n = 10*/
 })
 
-let Library = mongoose.model('library', AddBook)
+let Library = mongoose.model('Library', AddBook)
 
 module.exports = Library

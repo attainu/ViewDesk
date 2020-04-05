@@ -3,8 +3,8 @@ const Schema = mongoose.Schema
 
 const AttendanceLinkSchema = new Schema({
     token: { type: String, required: [true, 'Attendance link required'] },
-    classroom: { type: String, required: [true, 'classroom name required'], ref: 'classroom'},
-    createdBy: { type: Schema.Types.ObjectId, required: [true, 'creator _id required'], ref: 'professor' },
+    classroom: { type: String, required: [true, 'classroom name required'], ref: 'Classroom'},
+    createdBy: { type: Schema.Types.ObjectId, required: [true, 'creator _id required'], ref: 'Professor' },
     date: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -16,7 +16,7 @@ const PasswordResetSchema = new Schema({
 },
     { timestamps: true })
 
-let AttendanceLink = mongoose.model('attendance', AttendanceLinkSchema)
-let PasswordReset = mongoose.model('passwordRest', PasswordResetSchema)
+let AttendanceLink = mongoose.model('AttendanceLink', AttendanceLinkSchema)
+let PasswordReset = mongoose.model('PasswordRest', PasswordResetSchema)
 
 module.exports = { AttendanceLink, PasswordReset }
