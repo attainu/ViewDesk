@@ -3,9 +3,9 @@ const  Authenticate = require('../middlewares/authenticate')
 
 const { AdminProfile, /** Admin controllers */
         professorProfile, professorForum, /** Professor controllers */
-        librarianProfile, viewBooks, viewUsers,/** Librarian controllers */
+        librarianProfile,/** Librarian controllers */
         studentProfile, timetable, progress, issuedBooks, studentForum, /**  Student controllers */
-        students, professors, calendar, marksheet, curriculum, archiveRecord /** Common controllers */ } = require('../controllers/normalControllers')
+        students, professors, viewUsers, marksheet, curriculum, viewBooks, archiveRecord, calendar /** Common controllers */ } = require('../controllers/normalControllers')
 
 
 /** Admin routes */
@@ -24,7 +24,7 @@ Router.get('/api/professor/forum', Authenticate, professorForum)
 
 /** Librarian routes */
 Router.get('/api/librarian/profile', Authenticate, librarianProfile)
-Router.get('/api/librarian/books', Authenticate, viewBooks)
+Router.get('/api/librarian/books/:view', Authenticate, viewBooks)
 Router.get('/api/librarian/records/:view', Authenticate, archiveRecord)
 Router.get('/api/librarian/users', Authenticate, viewUsers)
 Router.get('/api/librarian/calendar', Authenticate, calendar)

@@ -150,8 +150,13 @@ controllers.viewBooks = (req, res) => {
 
 controllers.searchBooks = (req, res) => {
 
-    res.json('find books')
-    /** how to make searching feature for books */
+
+    let search = {}
+    if (req.params !== undefined) {
+
+        
+    }
+    
 }
 
 controllers.archiveRecord = (req, res) => {
@@ -176,7 +181,7 @@ controllers.archiveRecord = (req, res) => {
          * ( to whom book got issued and by whom ) */
     }
 
-    // searching for books
+    // searching in books
     Library.find(query)
         .populate()
         .exec()
@@ -188,7 +193,10 @@ controllers.archiveRecord = (req, res) => {
 }
 
 controllers.viewUsers = (req, res) => {
-    res.json('all users list')
+
+    let user = {}
+
+
 }
 
 /**---------------------------------------------------Student controllers----------------------------------------------------*/

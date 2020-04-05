@@ -19,8 +19,8 @@ let controllers = {}
 /**---------------------------------------------------Register & Login controllers----------------------------------------------------*/
 controllers.register = (req, res) => {
 
-    // getting user details from requrest body
-    const user = req.body
+    // getting user details from requrest params
+    const user = req.params
 
     // adding user to DB
     let newUser = new User(user)
@@ -42,8 +42,8 @@ controllers.register = (req, res) => {
 
 controllers.login = (req, res) => {
 
-    let Email = req.body.email
-    let pwd = req.body.password
+    let Email = req.params.email
+    let pwd = req.params.password
 
     // finding user in DB
     User.findOne({ email: Email })
@@ -81,8 +81,8 @@ controllers.addUser = (req, res) => {
     // getting user type from params
     const params = req.params
 
-    // getting user details from request body
-    const user = req.body
+    // getting user details from request params
+    const user = req.params
 
     // user credentials & details
     let userObj = {
@@ -112,8 +112,8 @@ controllers.removeUser = (req, res) => {
         // getting user type from params
         const params = req.params
     
-        // getting user details from request body
-        const user = req.body
+        // getting user details from request params
+        const user = req.params
     
         // find & deleting user
         User.findByIdAndDelete(user._id, (err, response) => {
@@ -129,7 +129,7 @@ controllers.removeUser = (req, res) => {
 controllers.addTopic = (req, res) => {
 
     // subject info
-    let subject = req.body
+    let subject = req.params
 
     // saving subject to curriculum
     let newTopic = new Curriculum(subject)
@@ -149,9 +149,9 @@ controllers.removeTopic = (req, res) => {
     // user data from request token
     const data = reqTokenDecoder(req)
 
-    // data from request body
-    const subject = req.body.subject
-    const sem = req.body.sem
+    // data from request params
+    const subject = req.params.subject
+    const sem = req.params.sem
 
     Curriculum.findOneAndDelete({ subject: subject, sem: sem, branch: data.branch }, (err, response) => {
 
@@ -164,7 +164,7 @@ controllers.removeTopic = (req, res) => {
 
 controllers.createMarksheet = (req, res) => {
 
-    /**let marksheet = req.body
+    /**let marksheet = req.params
 
     let newMarsheet = new Result(marksheet)
     newMarsheet.save()
@@ -177,7 +177,7 @@ controllers.createMarksheet = (req, res) => {
         .catch(err => res.json({ status: false, err }))*/
 
 
-    const { stdId: _id, grade, marks } = req.body
+    const { stdId: _id, grade, marks } = req.params
 
     User.findOne({ _id }, async (error, student) => {
 
@@ -199,7 +199,7 @@ controllers.generateAttendance = (req, res) => {
 /**---------------------------------------------------Librarian controllers----------------------------------------------------*/
 controllers.addBook = (req, res) => {
 
-    let book = req.body
+    let book = req.params
     let newBook = new Library(book)
     newBook.save()
         .then(response => {
@@ -212,7 +212,20 @@ controllers.addBook = (req, res) => {
 }
 
 controllers.removeBook = (req, res) => {
-    
+
+    // getting book _id
+    const book_id = req.params.book_id
+
+    // finding book
+    Library.findByIdAndDelete(book_id)
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book removed sucessfully' })
+            else
+                res.json({ status: false, message: 'Removing book unsuccessfull' })
+        })
+        .catch(err => res.json({ status: false, err }))
+
 }
 
 controllers.issueBook = (req, res) => {
@@ -259,9 +272,9 @@ controllers.markAttendance = (req, res) => {
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.resetPassword = (req, res) => {
 
-    // getting user input from request body
-    const userPwd = req.body.password
-    const newPassword = req.body.newPassword
+    // getting user input from request params
+    const userPwd = req.params.password
+    const newPassword = req.params.newPassword
 
     // getting request token from headers
     const data = reqTokenDecoder(req)
@@ -294,7 +307,7 @@ controllers.resetPassword = (req, res) => {
 
 controllers.forgotPassword = (req, res) => {
 
-    const userEmail = req.body.email
+    const userEmail = req.params.email
 
     // getting request token
     const data = reqTokenDecoder(req)
@@ -341,7 +354,7 @@ controllers.forgotPassword = (req, res) => {
 controllers.setForgotPassword = (req, res) => {
 
     // getting new password
-    newPassword = req.body.password
+    newPassword = req.params.password
 
     // getting request headers
     const data = reqTokenDecoder(req)

@@ -7,7 +7,10 @@ const Book = new Schema({
     ISBN: { type: String, required: [true, 'ISBN required'], /*trim: true, unique: true*/ },
     name: { type: String, required: [true, 'Book name required'], trim: true },
     topic: { type: String, required: [true, 'Book topic required'], trim: true },
-    category: { type: String, required: [true, 'Book Category required'], trim: true },
+    category: {
+        type: String, required: [true, 'Book Category required'], trim: true,
+        /*enum: ['ACADEMIC', 'REFERNCE', 'MAGAZINE', 'NOVEL', 'POETRY', 'BIOGRAPHY']*/ // <= GET OTEHR RELEVANT CATEGORIES OF BOOKS
+    },
     issued: { type: Boolean, default: false },
     issuedTo: { type: Schema.Types.ObjectId, default: null, ref: 'User' },
     issuedBy: { type: Schema.Types.ObjectId, default: null, ref: 'Librarian' }
