@@ -156,8 +156,9 @@ controllers.searchBooks = (req, res) => {
 
 controllers.archiveRecord = (req, res) => {
 
-    // sorting the query to display ISSUED or AVAILABLE books
     let query = {}
+
+    // sorting the query from params to display ISSUED / AVAILABLE books
     if (req.params !== undefined) {
 
         const view = req.params.view
