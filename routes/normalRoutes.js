@@ -5,13 +5,12 @@ const { AdminProfile, /** Admin controllers */
         professorProfile, professorForum, /** Professor controllers */
         librarianProfile,/** Librarian controllers */
         studentProfile, timetable, progress, issuedBooks, studentForum, /**  Student controllers */
-        students, professors, viewUsers, marksheet, curriculum, viewBooks, archiveRecord, calendar /** Common controllers */ } = require('../controllers/normalControllers')
+        viewUsers, marksheet, curriculum, viewBooks, archiveRecord, calendar /** Common controllers */ } = require('../controllers/normalControllers')
 
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, AdminProfile)
-Router.get('/api/admin/students', Authenticate, students)
-Router.get('/api/admin/professors', Authenticate, professors)
+Router.get('/api/admin/users/:role', Authenticate, viewUsers)
 Router.get('/api/admin/marksheet', Authenticate, marksheet)
 Router.get('/api/admin/calendar', Authenticate, calendar)
 
@@ -26,7 +25,7 @@ Router.get('/api/professor/forum', Authenticate, professorForum)
 Router.get('/api/librarian/profile', Authenticate, librarianProfile)
 Router.get('/api/librarian/books/:view', Authenticate, viewBooks)
 Router.get('/api/librarian/records/:view', Authenticate, archiveRecord)
-Router.get('/api/librarian/users', Authenticate, viewUsers)
+Router.get('/api/librarian/users/:role', Authenticate, viewUsers)
 Router.get('/api/librarian/calendar', Authenticate, calendar)
 
 /** Students routes */

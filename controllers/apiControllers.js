@@ -28,7 +28,7 @@ controllers.register = (req, res) => {
         .then(credentials => {
 
             /** IMPORTANT NOTE
-             * send LOGIN credentials on registered email address
+             * send LOGIN credentials on registered EMAIL address
              * after user sucessfull registration
              */
 

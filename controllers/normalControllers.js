@@ -313,12 +313,41 @@ controllers.calendar = (req, res) => {
     res.json('calender')
 }
 
-controllers.professors = (req, res) => {
-    res.json('All professor list')
-}
+controllers.viewUsers = (req, res) => {
 
-controllers.students = (req, res) => {
-    res.json('All students list')
+    // getting filter value from params
+    let user = req.params.role
+
+    // filter object
+    let filter = {}
+
+    // setting filter key & value
+    if (user.toUpperCase().trim() === 'ADMIN')
+        filter.role = 'ADMIN'
+
+    else if (user.toUpperCase().trim() === 'PROFESSOR')
+        filter.role = 'PROFESSOR'
+
+    else if (user.toUpperCase().trim() === 'LIBRARIAN')
+        filter.role = 'LIBRARIAN'
+
+    else if (user.toUpperCase().trim() === 'STUDENT')
+        filter.role = 'STUDENT'
+
+    // Searching using filter   
+    User.find(filter)
+        .populate()
+        .exec()
+        .then(response => {
+            if (response && response.length > 0)
+                res.json({ status: true, message: `Found user(s)`, user: response })
+
+            else {
+                message = `No user found`
+                res.json({ status: false, message: message, user: response })
+            }
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
 //exporting module
