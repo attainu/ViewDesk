@@ -161,9 +161,13 @@ controllers.searchBooks = (req, res) => {
 
 controllers.archiveRecord = (req, res) => {
 
+    // filter for searching in DB
     let filter = {}
 
+    // getting params
     const view = req.params.view
+
+    /** setting filter according to params value */
     if (view.toLowerCase().trim() === 'all')
         filter
 
@@ -173,7 +177,7 @@ controllers.archiveRecord = (req, res) => {
     else if (view.toLowerCase().trim() === 'available')
         filter.issued = false
 
-    // searching...
+    // searching with filters
     Library.find(filter)
         .populate()
         .exec()
