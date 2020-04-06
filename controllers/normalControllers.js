@@ -154,35 +154,27 @@ controllers.searchBooks = (req, res) => {
     let search = {}
     if (req.params !== undefined) {
 
-        
+
     }
-    
+
 }
 
 controllers.archiveRecord = (req, res) => {
 
-    let query = {}
+    let filter = {}
 
-    // sorting the query from params to display ISSUED / AVAILABLE books
-    if (req.params !== undefined) {
+    const view = req.params.view
+    if (view.toLowerCase().trim() === 'all')
+        filter
 
-        const view = req.params.view
+    else if (view.toLowerCase().trim() === 'issued')
+        filter.issued = true
 
-        // setting for issued books
-        if (view.toLowerCase().trim() === 'issued')
-            query.issued = true
+    else if (view.toLowerCase().trim() === 'available')
+        filter.issued = false
 
-        // setting for avialble books
-        else if (view.toLowerCase().trim() === 'available')
-            query.issued = false
-
-        /** NOTE: SEARCH
-         * how to find any issued book info
-         * ( to whom book got issued and by whom ) */
-    }
-
-    // searching in books
-    Library.find(query)
+    // searching...
+    Library.find(filter)
         .populate()
         .exec()
         .then(response => {
