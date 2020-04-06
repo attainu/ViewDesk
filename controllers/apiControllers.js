@@ -323,6 +323,32 @@ controllers.markAttendance = (req, res) => {
 
 
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
+controllers.editProfile = (req, res) => {
+
+    // getting user data from request headers
+    const data = reqTokenDecoder(req)
+
+    // getting what to edit
+    const edit = req.params.edit
+
+    // getting edit value acco
+    const options = ['email', 'username', 'contact', 'profile_picture']
+    const value = options.find(element => {
+
+        // when user choose to edit available field to edit
+        if (edit == element) return element
+
+        // when user choose to edit invalid field to edit
+        else res.json({ status: false, message: `edit option not avialable for ${edit}` })
+    })
+
+    // edit filters
+    let filter = {}
+
+    
+
+}
+
 controllers.resetPassword = (req, res) => {
 
     // getting user input from request params

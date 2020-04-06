@@ -1,7 +1,7 @@
 const Router = require('express').Router()
 const Authenticate = require('../middlewares/authenticate')
 
-const { register, login, resetPassword, forgotPassword, setForgotPassword,/** common functions */
+const { register, login, resetPassword, forgotPassword, setForgotPassword, editProfile, /** common functions */
         addUser, removeUser, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
         addBook, removeBook, issueBook, returnBook,/** Librarian functions*/
