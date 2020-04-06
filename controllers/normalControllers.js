@@ -163,27 +163,38 @@ controllers.archiveRecord = (req, res) => {
 
     // filter for searching in DB
     let filter = {}
+    let message = ``
 
     // getting params
     const view = req.params.view
 
     /** setting filter according to params value */
     if (view.toLowerCase().trim() === 'all')
-        filter
+        message = `All Books`
 
-    else if (view.toLowerCase().trim() === 'issued')
+    else if (view.toLowerCase().trim() === 'issued') {
         filter.issued = true
+        message = `Issued Books`
+    }
 
-    else if (view.toLowerCase().trim() === 'available')
+    else if (view.toLowerCase().trim() === 'available') {
         filter.issued = false
+        message = `Available Books`
+    }
 
     // searching with filters
     Library.find(filter)
         .populate()
         .exec()
         .then(response => {
-            if (response)
-                res.json({ status: true, message: 'found books', books: response })
+
+            if (response && response.length > 0)
+                res.json({ status: true, message: message, books: response })
+
+            else {
+                message = `No books found`
+                res.json({ status: false, message: message, books: response })
+            }
         })
         .catch(err => res.json({ status: false, err }))
 }
