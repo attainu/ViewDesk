@@ -22,8 +22,18 @@ controllers.register = (req, res) => {
     // getting user details from requrest params
     const user = req.body
 
+    // user object
+    let userObj = {
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        contact: user.contact,
+        role: user.role.toUpperCase(),
+        branch: user.branch.toUpperCase()
+    }
+
     // adding user to DB
-    let newUser = new User(user)
+    let newUser = new User(userObj)
     newUser.save()
         .then(credentials => {
 
@@ -42,8 +52,8 @@ controllers.register = (req, res) => {
 
 controllers.login = (req, res) => {
 
-    let Email = req.body.email
-    let pwd = req.body.password
+    let Email = req.params.email
+    let pwd = req.params.password
 
     // finding user in DB
     User.findOne({ email: Email })
@@ -81,8 +91,8 @@ controllers.addUser = (req, res) => {
     // getting user type from params
     const params = req.params
 
-    // getting user details from request params
-    const user = req.params
+    // getting user details from request body
+    const user = req.body
 
     // user credentials & details
     let userObj = {
@@ -90,16 +100,14 @@ controllers.addUser = (req, res) => {
         email: user.email,
         password: user.password,
         contact: user.contact,
-        role: params.role,
-        branch: params.branch
+        role: params.role.toUpperCase(),
+        branch: params.branch.toUpperCase()
     }
 
     // saving user in DB
     let newUser = new User(userObj)
     newUser.save()
         .then(response => {
-
-            console.log(response)
 
             /** IMPORTANT NOTE
              * send LOGIN credentials on registered EMAIL address
