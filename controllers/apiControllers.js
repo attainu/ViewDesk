@@ -20,7 +20,7 @@ let controllers = {}
 controllers.register = (req, res) => {
 
     // getting user details from requrest params
-    const user = req.params
+    const user = req.body
 
     // adding user to DB
     let newUser = new User(user)
@@ -42,8 +42,8 @@ controllers.register = (req, res) => {
 
 controllers.login = (req, res) => {
 
-    let Email = req.params.email
-    let pwd = req.params.password
+    let Email = req.body.email
+    let pwd = req.body.password
 
     // finding user in DB
     User.findOne({ email: Email })
@@ -89,6 +89,7 @@ controllers.addUser = (req, res) => {
         name: user.name,
         email: user.email,
         password: user.password,
+        contact: user.contact,
         role: params.role,
         branch: params.branch
     }
@@ -97,12 +98,20 @@ controllers.addUser = (req, res) => {
     let newUser = new User(userObj)
     newUser.save()
         .then(response => {
-            console.log(response)
-            // send login details to registered email address using NODEMAILER <= IMPORTANT
 
-            res.json({ status: true, message: 'User added successfully & Credentials sent to registered Email addresss' })
+            console.log(response)
+
+            /** IMPORTANT NOTE
+             * send LOGIN credentials on registered EMAIL address
+             * after user sucessfull registration
+             */
+            if (response)
+                res.json({ status: true, message: 'Registration successfull & Credentials sent to registered Email addresss' })
+            else
+
+                res.json({ status: false, message: 'Registration failed' })
         })
-        .catch(err => res.json({ status: true, err }))
+        .catch(err => res.json({ status: false, err }))
 }
 
 
