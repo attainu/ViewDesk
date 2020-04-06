@@ -2,9 +2,9 @@ const Router = require('express').Router()
 const Authenticate = require('../middlewares/authenticate')
 
 const { register, login, resetPassword, forgotPassword, setForgotPassword,/** common functions */
-        addUser, removeUser, issueBook, /** Admin functions*/
+        addUser, removeUser, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
-        addBook, removeBook, /** Librarian functions*/
+        addBook, removeBook, issueBook, returnBook,/** Librarian functions*/
         markAttendance /** Student functions */ } = require('../controllers/apiControllers')
 
 /**
@@ -39,6 +39,7 @@ Router.post('/api/professor/events', Authenticate, addEvent)
 Router.post('/api/librarian/addbook', Authenticate, addBook)
 Router.delete('/api/librarian/remove/:book_id', Authenticate, removeBook)
 Router.patch('/api/librarian/issue/:book_id/:user_id', Authenticate, issueBook)
+Router.patch('/api/librarian/return/:book_id', Authenticate, returnBook)
 
 /** Student routes */
 Router.post('/api/student/markattendance', Authenticate, markAttendance)

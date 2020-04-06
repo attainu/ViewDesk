@@ -251,6 +251,23 @@ controllers.issueBook = (req, res) => {
         .catch(err => res.json({ status: false, err }))
 }
 
+controllers.returnBook = (req, res) => {
+
+    // getting book id
+    const book = req.params.book_id
+
+    // returning book
+    Library.findByIdAndUpdate(book, { $set: { issuedTo: null, issuedBy: null, issued: false } }, { new: true })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book returned', issue_details: response })
+            else
+                res.json({ status: false, message: 'Book not returned' })
+        })
+        .catch(err => res.json({ status: false, err }))
+
+}
+
 
 /**---------------------------------------------------Student controllers----------------------------------------------------*/
 /** need to be done */
