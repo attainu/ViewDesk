@@ -19,7 +19,9 @@ controllers.AdminProfile = (req, res) => {
     const data = reqTokenDecoder(req)
 
     // finding user in DB
-    User.findOne({ email: data.email, role: data.role })
+    User.findById(data.id)
+        .populate()
+        .exec()
         .then(user => {
             if (user)
                 //sending JSON response
@@ -30,8 +32,8 @@ controllers.AdminProfile = (req, res) => {
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        branch: 'Add branch here...'
-                        /** add more profile details here */
+                        branch: user.branch,
+                        contact: user.contact
                     }
                 })
             else
@@ -108,7 +110,9 @@ controllers.librarianProfile = (req, res) => {
     const data = reqTokenDecoder(req)
 
     // finding user in DB
-    User.findOne({ email: data.email, role: data.role })
+    User.findById(data.id)
+        .populate()
+        .exec()
         .then(user => {
             if (user)
                 //sending JSON response
@@ -119,7 +123,7 @@ controllers.librarianProfile = (req, res) => {
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        branch: 'Add branch here...'
+                        branch: user.branch
                         /** add more profile details here */
                     }
                 })
@@ -129,16 +133,77 @@ controllers.librarianProfile = (req, res) => {
         .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
-controllers.issueBook = (req, res) => {
-    res.json('Issue Book')
+controllers.viewBooks = (req, res) => {
+
+    // show all books available in Library
+    Library.find({})
+        .populate()
+        .exec()
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'available books', books: response })
+            else
+                res.json({ status: false, message: 'Books are not available' })
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
-controllers.issueRecord = (req, res) => {
-    res.json('Issue Record')
+controllers.searchBooks = (req, res) => {
+
+
+    let search = {}
+    if (req.params !== undefined) {
+
+
+    }
+
 }
 
-controllers.libForum = (req, res) => {
-    res.json('librarian forum')
+controllers.archiveRecord = (req, res) => {
+
+    // filter for searching in DB
+    let filter = {}
+    let message = ``
+
+    // getting params
+    const view = req.params.view
+
+    /** setting filter according to params value */
+    if (view.toLowerCase().trim() === 'all')
+        message = `All Books`
+
+    else if (view.toLowerCase().trim() === 'issued') {
+        filter.issued = true
+        message = `Issued Books`
+    }
+
+    else if (view.toLowerCase().trim() === 'available') {
+        filter.issued = false
+        message = `Available Books`
+    }
+
+    // searching with filters
+    Library.find(filter)
+        .populate()
+        .exec()
+        .then(response => {
+
+            if (response && response.length > 0)
+                res.json({ status: true, message: message, books: response })
+
+            else {
+                message = `No books found`
+                res.json({ status: false, message: message, books: response })
+            }
+        })
+        .catch(err => res.json({ status: false, err }))
+}
+
+controllers.viewUsers = (req, res) => {
+
+    let user = {}
+
+
 }
 
 /**---------------------------------------------------Student controllers----------------------------------------------------*/
@@ -248,12 +313,41 @@ controllers.calendar = (req, res) => {
     res.json('calender')
 }
 
-controllers.professors = (req, res) => {
-    res.json('All professor list')
-}
+controllers.viewUsers = (req, res) => {
 
-controllers.students = (req, res) => {
-    res.json('All students list')
+    // getting filter value from params
+    let user = req.params.role
+
+    // filter object
+    let filter = {}
+
+    // setting filter key & value
+    if (user.toUpperCase().trim() === 'ADMIN')
+        filter.role = 'ADMIN'
+
+    else if (user.toUpperCase().trim() === 'PROFESSOR')
+        filter.role = 'PROFESSOR'
+
+    else if (user.toUpperCase().trim() === 'LIBRARIAN')
+        filter.role = 'LIBRARIAN'
+
+    else if (user.toUpperCase().trim() === 'STUDENT')
+        filter.role = 'STUDENT'
+
+    // Searching using filter   
+    User.find(filter)
+        .populate()
+        .exec()
+        .then(response => {
+            if (response && response.length > 0)
+                res.json({ status: true, message: `Found user(s)`, user: response })
+
+            else {
+                message = `No user found`
+                res.json({ status: false, message: message, user: response })
+            }
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
 //exporting module

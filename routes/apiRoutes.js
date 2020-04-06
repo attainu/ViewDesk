@@ -4,8 +4,8 @@ const Authenticate = require('../middlewares/authenticate')
 const { register, login, resetPassword, forgotPassword, setForgotPassword,/** common functions */
         addUser, removeUser, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
-        addBook, /** Librarian functions*/
-        markAttendance /** Student functions */ } = require('../controllers/postControllers')
+        addBook, removeBook, issueBook, returnBook,/** Librarian functions*/
+        markAttendance /** Student functions */ } = require('../controllers/apiControllers')
 
 /**
  * NOTE:-
@@ -36,7 +36,10 @@ Router.post('/api/professor/attendance:branch', Authenticate, generateAttendance
 Router.post('/api/professor/events', Authenticate, addEvent)
 
 /** librarina routes */
-Router.post('/api/librarian/archieve', Authenticate, addBook)
+Router.post('/api/librarian/addbook', Authenticate, addBook)
+Router.delete('/api/librarian/remove/:book_id', Authenticate, removeBook)
+Router.patch('/api/librarian/issue/:book_id/:user_id', Authenticate, issueBook)
+Router.patch('/api/librarian/return/:book_id', Authenticate, returnBook)
 
 /** Student routes */
 Router.post('/api/student/markattendance', Authenticate, markAttendance)

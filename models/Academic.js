@@ -16,7 +16,9 @@ const MarksheetSchema = new Schema({
      * or add _id instead of stdEmail to keep it unique 
      * this would better for duplicate check.
     */
+    student: { type: Schema.Types.ObjectId, required: [true, 'Student _id required'], ref: 'Student' },
     exam: { type: String, required: [true, 'Exam name required'] },
+    sem: { type: Number, required: [true, 'Semester required'], enum: [1, 2, 3, 4, 5, 6, 7, 8] },
     grade: { type: String, required: [true, 'Grade required'], enum: ['A', 'B', 'C', 'D', 'D#', 'F'] },
     marks: {
         sub1: {

@@ -3,13 +3,13 @@ const Schema = mongoose.Schema
 
 const ClassroomSchema = new Schema({
     className: { type: String },
-    admin: { type: Schema.Types.ObjectId, ref: 'admin' },
-    professors: [{ type: Schema.Types.ObjectId, ref: 'professor' }],
-    students: [{ type: Schema.Types.ObjectId, ref: 'student' }],
+    admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
+    professors: [{ type: Schema.Types.ObjectId, ref: 'Professor' }],
+    students: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
     date: { type: Date, default: Date.now() },
 },
     { timestamps: true })
 
-let Classroom = mongoose.model('classroom', ClassroomSchema)
+let Classroom = mongoose.model('Classroom', ClassroomSchema)
 
 module.exports = Classroom

@@ -19,21 +19,20 @@ let controllers = {}
 /**---------------------------------------------------Register & Login controllers----------------------------------------------------*/
 controllers.register = (req, res) => {
 
-    // getting user details from requrest body
+    // getting user details from requrest params
     const user = req.body
 
     // adding user to DB
     let newUser = new User(user)
     newUser.save()
         .then(credentials => {
-            if (credentials)
 
             /** IMPORTANT NOTE
-             * send LOGIN credentials on registered email address
+             * send LOGIN credentials on registered EMAIL address
              * after user sucessfull registration
              */
 
-            let credentials = 
+            if (credentials)
                 res.json({ status: true, message: 'Registration Successfull' })
             else
                 res.json({ status: false, message: 'Registration Failed' })
@@ -82,14 +81,15 @@ controllers.addUser = (req, res) => {
     // getting user type from params
     const params = req.params
 
-    // getting user details from request body
-    const user = req.body
+    // getting user details from request params
+    const user = req.params
 
     // user credentials & details
     let userObj = {
         name: user.name,
         email: user.email,
         password: user.password,
+        contact: user.contact,
         role: params.role,
         branch: params.branch
     }
@@ -98,12 +98,20 @@ controllers.addUser = (req, res) => {
     let newUser = new User(userObj)
     newUser.save()
         .then(response => {
-            console.log(response)
-            // send login details to registered email address using NODEMAILER <= IMPORTANT
 
-            res.json({ status: true, message: 'User added successfully & Credentials sent to registered Email addresss' })
+            console.log(response)
+
+            /** IMPORTANT NOTE
+             * send LOGIN credentials on registered EMAIL address
+             * after user sucessfull registration
+             */
+            if (response)
+                res.json({ status: true, message: 'Registration successfull & Credentials sent to registered Email addresss' })
+            else
+
+                res.json({ status: false, message: 'Registration failed' })
         })
-        .catch(err => res.json({ status: true, err }))
+        .catch(err => res.json({ status: false, err }))
 }
 
 
@@ -113,8 +121,8 @@ controllers.removeUser = (req, res) => {
         // getting user type from params
         const params = req.params
     
-        // getting user details from request body
-        const user = req.body
+        // getting user details from request params
+        const user = req.params
     
         // find & deleting user
         User.findByIdAndDelete(user._id, (err, response) => {
@@ -130,7 +138,7 @@ controllers.removeUser = (req, res) => {
 controllers.addTopic = (req, res) => {
 
     // subject info
-    let subject = req.body
+    let subject = req.params
 
     // saving subject to curriculum
     let newTopic = new Curriculum(subject)
@@ -150,9 +158,9 @@ controllers.removeTopic = (req, res) => {
     // user data from request token
     const data = reqTokenDecoder(req)
 
-    // data from request body
-    const subject = req.body.subject
-    const sem = req.body.sem
+    // data from request params
+    const subject = req.params.subject
+    const sem = req.params.sem
 
     Curriculum.findOneAndDelete({ subject: subject, sem: sem, branch: data.branch }, (err, response) => {
 
@@ -165,7 +173,7 @@ controllers.removeTopic = (req, res) => {
 
 controllers.createMarksheet = (req, res) => {
 
-    /**let marksheet = req.body
+    /**let marksheet = req.params
 
     let newMarsheet = new Result(marksheet)
     newMarsheet.save()
@@ -178,12 +186,12 @@ controllers.createMarksheet = (req, res) => {
         .catch(err => res.json({ status: false, err }))*/
 
 
-    const { stdId: _id, grade, marks } = req.body
+    const { stdId: _id, grade, marks } = req.params
 
-    User.findOne({ _id }, async (error, student) => {
+    User.findOne({ _id }, async (error, user) => {
 
-        console.log(student)
-        //student.author = author;
+        console.log(user)
+        //user.author = author;
         //console.log(story.author.name); // prints "Ian Fleming"
     });
 }
@@ -200,19 +208,73 @@ controllers.generateAttendance = (req, res) => {
 /**---------------------------------------------------Librarian controllers----------------------------------------------------*/
 controllers.addBook = (req, res) => {
 
-    /**
-     * Schema:- ISBN, name, topic, category,
-     */
-    let bookData = req.body
-    let newBook = new Library(bookData)
+    // getting book details
+    let book = req.body
+
+    // adding book to library
+    let newBook = new Library(book)
     newBook.save()
-        .then(confirmation => {
-            if (confirmation)
-                res.json({ status: true, message: 'Book added to Library' })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book added successfully' })
             else
                 res.json({ status: false, message: 'Failed to add Book' })
         })
-        .catch(err => res.json({ status: false, message: 'Failed to add Book', Error: `${err}` }))
+        .catch(err => res.json({ status: false, message: 'Failed to add Book', err }))
+}
+
+controllers.removeBook = (req, res) => {
+
+    // getting book _id
+    const book_id = req.params.book_id
+
+    // finding book
+    Library.findByIdAndDelete(book_id)
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book removed sucessfully' })
+            else
+                res.json({ status: false, message: 'Removing book unsuccessfull' })
+        })
+        .catch(err => res.json({ status: false, err }))
+
+}
+
+controllers.issueBook = (req, res) => {
+
+    // getting route user details from headers token
+    const librarian = reqTokenDecoder(req)
+
+    // getting book & user ids
+    const book = req.params.book_id
+    const user = req.params.user_id
+
+    // finding book
+    Library.findByIdAndUpdate(book, { $set: { issuedTo: user, issuedBy: librarian.id, issued: true } }, { new: true })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book issued', issue_details: response })
+            else
+                res.json({ status: false, message: 'Book not issued' })
+        })
+        .catch(err => res.json({ status: false, err }))
+}
+
+controllers.returnBook = (req, res) => {
+
+    // getting book id
+    const book = req.params.book_id
+
+    // returning book
+    Library.findByIdAndUpdate(book, { $set: { issuedTo: null, issuedBy: null, issued: false } }, { new: true })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book returned', issue_details: response })
+            else
+                res.json({ status: false, message: 'Book not returned' })
+        })
+        .catch(err => res.json({ status: false, err }))
+
 }
 
 
@@ -255,9 +317,9 @@ controllers.markAttendance = (req, res) => {
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
 controllers.resetPassword = (req, res) => {
 
-    // getting user input from request body
-    const userPwd = req.body.password
-    const newPassword = req.body.newPassword
+    // getting user input from request params
+    const userPwd = req.params.password
+    const newPassword = req.params.newPassword
 
     // getting request token from headers
     const data = reqTokenDecoder(req)
@@ -290,7 +352,7 @@ controllers.resetPassword = (req, res) => {
 
 controllers.forgotPassword = (req, res) => {
 
-    const userEmail = req.body.email
+    const userEmail = req.params.email
 
     // getting request token
     const data = reqTokenDecoder(req)
@@ -337,7 +399,7 @@ controllers.forgotPassword = (req, res) => {
 controllers.setForgotPassword = (req, res) => {
 
     // getting new password
-    newPassword = req.body.password
+    newPassword = req.params.password
 
     // getting request headers
     const data = reqTokenDecoder(req)
