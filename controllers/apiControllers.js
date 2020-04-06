@@ -179,10 +179,10 @@ controllers.createMarksheet = (req, res) => {
 
     const { stdId: _id, grade, marks } = req.params
 
-    User.findOne({ _id }, async (error, student) => {
+    User.findOne({ _id }, async (error, user) => {
 
-        console.log(student)
-        //student.author = author;
+        console.log(user)
+        //user.author = author;
         //console.log(story.author.name); // prints "Ian Fleming"
     });
 }
@@ -199,7 +199,10 @@ controllers.generateAttendance = (req, res) => {
 /**---------------------------------------------------Librarian controllers----------------------------------------------------*/
 controllers.addBook = (req, res) => {
 
-    let book = req.params
+    // getting book details
+    let book = req.body
+
+    // adding book to library
     let newBook = new Library(book)
     newBook.save()
         .then(response => {
@@ -229,7 +232,23 @@ controllers.removeBook = (req, res) => {
 }
 
 controllers.issueBook = (req, res) => {
-    res.json('Issue Book')
+
+    // getting route user details from headers token
+    const librarian = reqTokenDecoder(req)
+
+    // getting book & user ids
+    const book = req.params.book_id
+    const user = req.params.user_id
+
+    // finding book
+    Library.findByIdAndUpdate(book, { $set: { issuedTo: user, issuedBy: librarian.id, issued: true } }, { new: true })
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: 'Book issued', issue_details: response })
+            else
+                res.json({ status: false, message: 'Book not issued' })
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
 

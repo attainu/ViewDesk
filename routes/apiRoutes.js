@@ -38,7 +38,7 @@ Router.post('/api/professor/events', Authenticate, addEvent)
 /** librarina routes */
 Router.post('/api/librarian/addbook', Authenticate, addBook)
 Router.delete('/api/librarian/remove/:book_id', Authenticate, removeBook)
-Router.post('/api/librarian/issue/:book_id', Authenticate, issueBook)
+Router.patch('/api/librarian/issue/:book_id/:user_id', Authenticate, issueBook)
 
 /** Student routes */
 Router.post('/api/student/markattendance', Authenticate, markAttendance)
