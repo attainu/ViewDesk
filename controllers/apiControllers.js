@@ -10,7 +10,7 @@ const { Curriculum, Result } = require('../models/Academic')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const reqTokenDecoder = require('../utils/reqTokenDecoder')
-const mailer = require('../utils/mailer')
+const mailer = require('../utils/mail')
 
 require('dotenv').config()
 
@@ -121,7 +121,6 @@ controllers.addUser = (req, res) => {
         })
         .catch(err => res.json({ status: false, err }))
 }
-
 
 controllers.removeUser = (req, res) => {
     res.json('remove user')

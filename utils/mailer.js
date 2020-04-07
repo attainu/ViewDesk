@@ -1,60 +1,36 @@
 const nodemailer = require('nodemailer')
-const { GMAIL, GMAIL_PASS } = require('dotenv').config()
+require('dotenv').config('../.env')
 
-// trnsport
-const transportOption = {
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    debug: true,
-    auth: {
-        user: GMAIL,
-        pass: GMAIL_PASS
-    }
+let mailer = async (mail) => {
+    let transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+        port: 465,
+        secure: true,
+        auth: {
+            user: process.env.GMAIL,
+            pass: process.env.GMAIL_PASS
+        }
+    });
+    // send mail with defined transport object
+    let info = await transporter.sendMail(mail);
+
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
+    // Preview only available when sending through an Ethereal account
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 }
 
-// creating transport
-const mailTransport = nodemailer.createTransport(transportOption)
 
-// sending mail
-const sendMail = async (mode, email, token) => {
-
-    console.log('getting called', mode) // testing
-
-    const domainName = 'www.heroku.com'
-
-    let html = ``
-
-    if (mode === "confirm")
-        html = `<h3>Here's the link to confirm your email address</h3>
-                <a href=${domainName}/confirm/:${token}>here</a>`
-
-    else if (mode === "forgot")
-        html = `<h3>Here is the link to set your forgot password</h3>
-                <a href=${domainName}/password/:${token}>here</a>
-
-                <p>and if you didn't requested to set forgot password, kindly igonre it</p>.
-                `
-    else if (mode === "report")
-        html = ``
-
-    try {
-        await mailTransport.sendMail({
-            from: GMAIL,
-            to: email,
-            subject:
-                mode === "confirm" ? "confirm your email" : "Reset your password", html
-        });
-
-    } catch (err) {
-        console.log(err);
-        throw err;
+ let Mail = {
+        from: 'View Desk', // sender address
+        to: 'dhanesh.vishwakarma11@gmail.com', // list of receivers
+        subject: 'TESTING', // Subject line
+        text: 'Hey', // plain text body
+        html: '<h3>Hello From View Desk</h3>'      
     }
-}
 
-/** function testing  */
-sendMail('confirm', 'dhanesh.vishwakarma11@gmail.com', '!@#$%^&*')
-
+mailer(Mail)
 
 // exporting module
-module.exports = sendMail
+module.exports = mailer
