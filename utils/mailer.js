@@ -21,8 +21,8 @@ let mailer = async (mail) => {
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
 }
 
-
- let Mail = {
+// testing
+ /*let Mail = {
         from: 'View Desk', // sender address
         to: 'dhanesh.vishwakarma11@gmail.com', // list of receivers
         subject: 'TESTING', // Subject line
@@ -31,6 +31,7 @@ let mailer = async (mail) => {
     }
 
 mailer(Mail)
+*/
 
 // exporting module
 module.exports = mailer
