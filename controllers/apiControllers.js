@@ -10,9 +10,9 @@ const { Curriculum, Result } = require('../models/Academic')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const reqTokenDecoder = require('../utils/reqTokenDecoder')
-const mailer = require('../utils/mail')
+const mailer = require('../utils/mailer')
 
-require('dotenv').config()
+require('dotenv').config('../.env')
 
 let controllers = {}
 
