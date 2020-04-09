@@ -8,8 +8,10 @@ const UserSchema = new Schema({
     username: { type: String, default: null, /*unique: true, trim: true*/ },
     password: { type: String, required: [true, 'password required'] },
     contact: { type: String, default: null, requird: [true, 'contact number required'], /*unique: true, trim: true*/ },
+    gender: { type: String, enum: ['MALE', 'FEMALE', 'OTHER'], required: [true, 'Gender required'] },
     role: { type: String, required: [true, 'role required'], enum: ['ADMIN', 'PROFESSOR', 'LIBRARIAN', 'STUDENT'] },
     branch: { type: String, required: [true, 'branch required'], enum: ['ME', 'CE', 'EE', 'IT', 'CSE', 'ECE', 'EEE', 'NTS', 'ADMIN'] },
+    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -37,8 +39,8 @@ UserSchema.pre('save', function (next) {
 // Admin details
 const AdminSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
+    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
     classrooms: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Classroom' }],
-    profile_picture: { type: String, default: null },
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -46,8 +48,8 @@ const AdminSchema = new Schema({
 // Professor details
 const ProfessorSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    classrooms: { type: Schema.Types.ObjectId, ref: 'Classroom' },
-    profile_picture: { type: String, default: null },
+
+    classrooms: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Classroom' }],
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -55,7 +57,7 @@ const ProfessorSchema = new Schema({
 // Librarian details
 const LibrarianSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-    profile_picture: { type: String, default: null },
+    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -63,10 +65,9 @@ const LibrarianSchema = new Schema({
 // Student details
 const StudentSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
+    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
     classrooms: { type: Schema.Types.ObjectId, ref: 'Classroom' },
     marksheets: [{ type: Schema.Types.ObjectId, default: null, ref: 'Marksheet' }],
-    batch: { type: String },
-    profile_picture: { type: String, default: null },
     parentInfo: {
         email: { type: String },
         contact: { type: Number }

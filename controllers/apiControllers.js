@@ -1,5 +1,4 @@
 /** database modules */
-
 require('../models/DB')
 const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
 const Library = require('../models/Archive')
@@ -28,6 +27,7 @@ controllers.register = (req, res) => {
         email: user.email,
         password: user.password,
         contact: user.contact,
+        gender: user.gender,
         role: user.role.toUpperCase(),
         branch: user.branch.toUpperCase()
     }

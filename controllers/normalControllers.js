@@ -13,63 +13,9 @@ require('dotenv').config()
 let controllers = {}
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
-controllers.AdminProfile = (req, res) => {
 
-    // getting token from headers
-    const data = reqTokenDecoder(req)
-
-    // finding user in DB
-    User.findById(data.id)
-        .populate()
-        .exec()
-        .then(user => {
-            if (user)
-                //sending JSON response
-                res.json({
-                    status: true,
-                    message: `Profile found`,
-                    profile: {
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        branch: user.branch,
-                        contact: user.contact
-                    }
-                })
-            else
-                res.json({ status: true, message: 'Profile not found' })
-        })
-        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
-}
 
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
-controllers.professorProfile = (req, res) => {
-
-    // getting token from headers
-    const data = reqTokenDecoder(req)
-
-    // finding user in DB
-    User.findOne({ email: data.email, role: data.role })
-        .then(user => {
-            if (user)
-                //sending JSON response
-                res.json({
-                    status: true,
-                    message: `Profile found`,
-                    profile: {
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        branch: 'Add branch here...'// user.branch
-                        /** add more profile details here */
-                    }
-                })
-            else
-                res.json({ status: true, message: 'Profile not found' })
-        })
-        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
-}
-
 controllers.curriculum = (req, res) => {
 
     let branch = req.params.branch
@@ -90,13 +36,17 @@ controllers.students = (req, res) => {
     let user = reqTokenDecoder(req)
 
     // find students
-    User.find({ branch: user.branch }, (error, result) => {
-        if (err)
-            res.json({ status: false, error })
-        if (result)
-            res.json({ status: true, message: `All Students of ${user.branch} found`, students: result })
-    })
+    User.find({ branch: user.branch, role: user.role })
+        .populate()
+        .exec()
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: `All Students of ${user.branch} found`, students: result })
+            else
+                res.json({ status: false, message: 'Students not found' })
 
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
 controllers.professorForum = (req, res) => {
@@ -104,38 +54,8 @@ controllers.professorForum = (req, res) => {
 }
 
 /**---------------------------------------------------Librarian controllers----------------------------------------------------*/
-controllers.librarianProfile = (req, res) => {
+controllers.searchBooks = (req, res) => {
 
-    // getting token from headers
-    const data = reqTokenDecoder(req)
-
-    // finding user in DB
-    User.findById(data.id)
-        .populate()
-        .exec()
-        .then(user => {
-            if (user)
-                //sending JSON response
-                res.json({
-                    status: true,
-                    message: `Profile found`,
-                    profile: {
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        branch: user.branch
-                        /** add more profile details here */
-                    }
-                })
-            else
-                res.json({ status: true, message: 'Profile not found' })
-        })
-        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
-}
-
-controllers.viewBooks = (req, res) => {
-
-    // show all books available in Library
     Library.find({})
         .populate()
         .exec()
@@ -169,10 +89,7 @@ controllers.archiveRecord = (req, res) => {
     const view = req.params.view
 
     /** setting filter according to params value */
-    if (view.toLowerCase().trim() === 'all')
-        message = `All Books`
-
-    else if (view.toLowerCase().trim() === 'issued') {
+    if (view.toLowerCase().trim() === 'issued') {
         filter.issued = true
         message = `Issued Books`
     }
@@ -181,6 +98,10 @@ controllers.archiveRecord = (req, res) => {
         filter.issued = false
         message = `Available Books`
     }
+
+    else
+        res.status().json({ status: false, message: `Invalid request` })
+
 
     // searching with filters
     Library.find(filter)
@@ -207,33 +128,6 @@ controllers.viewUsers = (req, res) => {
 }
 
 /**---------------------------------------------------Student controllers----------------------------------------------------*/
-controllers.studentProfile = (req, res) => {
-
-    // getting token from headers
-    const data = reqTokenDecoder(req)
-
-    // finding user in DB
-    User.findOne({ email: data.email, role: data.role })
-        .then(user => {
-            if (user)
-                //sending JSON response
-                res.json({
-                    status: true,
-                    message: `Profile found`,
-                    profile: {
-                        name: user.name,
-                        email: user.email,
-                        role: user.role,
-                        branch: 'Add branch here...'
-                        /** add more profile details here */
-                    }
-                })
-            else
-                res.json({ status: true, message: 'Profile not found' })
-        })
-        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
-}
-
 controllers.curriculum = (req, res) => {
 
     // getting token from headers
@@ -293,24 +187,26 @@ controllers.studentForum = (req, res) => {
 }
 
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
-controllers.marksheet = (req, res) => {
+controllers.Profile = (req, res) => {
 
+    // getting token from headers
+    const data = reqTokenDecoder(req)
 
-    let branch = req.params.branch
-    let email = req.query.email
-    let query = { branch: branch, email: email }
-    Marksheet.find(query)
-        .then(marksheet => {
-            if (marksheet)
-                res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
+    // finding user in DB
+    User.findById(data.id)
+        .populate()
+        .exec()
+        .then(response => {
+            if (response) {
+
+                // exculding password before storing user info in profile
+                const { password, ...profile } = user
+                res.json({ status: true, message: `Profile found`, profile: profile })
+            }
             else
-                res.json({ status: true, message: 'Marksheet Not found', })
+                res.json({ status: true, message: 'Profile not found' })
         })
-        .catch(err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
-}
-
-controllers.calendar = (req, res) => {
-    res.json('calender')
+        .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
 }
 
 controllers.viewUsers = (req, res) => {
@@ -349,6 +245,28 @@ controllers.viewUsers = (req, res) => {
         })
         .catch(err => res.json({ status: false, err }))
 }
+
+controllers.marksheet = (req, res) => {
+
+
+    let branch = req.params.branch
+    let email = req.query.email
+    let query = { branch: branch, email: email }
+    Marksheet.find(query)
+        .then(marksheet => {
+            if (marksheet)
+                res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
+            else
+                res.json({ status: true, message: 'Marksheet Not found', })
+        })
+        .catch(err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
+}
+
+controllers.calendar = (req, res) => {
+    res.json('calender')
+}
+
+
 
 //exporting module
 module.exports = controllers
