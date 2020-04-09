@@ -11,7 +11,8 @@ const {  /** Admin controllers */
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, Profile)
 Router.get('/api/admin/users/:role', Authenticate, viewUsers)
-Router.get('/api/admin/marksheet', Authenticate, marksheet)
+Router.get('/api/admin/marksheet/:view', Authenticate, marksheet)
+Router.get('/api/admin/marksheet/forward/:std_id', Authenticate, forwardMarksheet)
 Router.get('/api/admin/calendar', Authenticate, calendar)
 
 /** professor routes */

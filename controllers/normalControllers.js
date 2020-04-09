@@ -13,7 +13,20 @@ require('dotenv').config()
 let controllers = {}
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
+controllers.forwardMarksheet = (req, res) => {
 
+    const std_id = req.params.std_id
+
+    Student.findById(std_id)
+    .populate('Student', 'marksheets')
+    .exec()
+    .then( student => {
+        if (student) {
+            // need to setup the email to forward the marksheet
+        }
+    })
+    .catch()
+}
 
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
 controllers.curriculum = (req, res) => {
