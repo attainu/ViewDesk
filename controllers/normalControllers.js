@@ -13,7 +13,6 @@ require('dotenv').config()
 let controllers = {}
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
-<<<<<<< HEAD
 controllers.forwardMarksheet = (req, res) => {
 
     const std_id = req.params.std_id
@@ -27,7 +26,8 @@ controllers.forwardMarksheet = (req, res) => {
         }
     })
     .catch()
-=======
+}
+
 controllers.viewUsers = (req, res) => {
 
     // getting search value from params
@@ -61,7 +61,6 @@ controllers.viewUsers = (req, res) => {
                 res.json({ status: false, message: message, user: response })
         })
         .catch(err => res.json({ status: false, err }))
->>>>>>> viewdesk
 }
 
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/

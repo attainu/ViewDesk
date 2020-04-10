@@ -10,14 +10,9 @@ const { viewUsers, /** Admin controllers */
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, Profile)
-<<<<<<< HEAD
 Router.get('/api/admin/users/:role', Authenticate, viewUsers)
 Router.get('/api/admin/marksheet/:view', Authenticate, marksheet)
 Router.get('/api/admin/marksheet/forward/:std_id', Authenticate, forwardMarksheet)
-=======
-Router.get('/api/admin/view/:user', Authenticate, viewUsers)
-Router.get('/api/admin/marksheet', Authenticate, marksheet)
->>>>>>> viewdesk
 Router.get('/api/admin/calendar', Authenticate, calendar)
 
 /** professor routes */

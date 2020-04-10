@@ -350,9 +350,9 @@ controllers.editProfile = (req, res) => {
 
 controllers.resetPassword = (req, res) => {
 
-    // getting user input from request params
-    const userPwd = req.params.password
-    const newPassword = req.params.newPassword
+    // getting user input from request body
+    const userPwd = req.body.password
+    const newPassword = req.body.newPassword
 
     // getting request token from headers
     const data = reqTokenDecoder(req)
@@ -370,17 +370,17 @@ controllers.resetPassword = (req, res) => {
                         User.update({ _id: doc.id }, { $set: { password: newPassword } }, { new: true })
                             .then(response => {
                                 if (response)
-                                    res.json({ status: true, message: 'Password changed successfully' })
+                                    res.json({ status: true, message: 'Password updated successfully' })
                                 else
-                                    res.json({ status: false, message: 'Failed to change password' })
+                                    res.json({ status: false, message: 'Failed to update password' })
                             })
-                            .catch(err => res.json({ status: true, message: 'Failed to change password', error: err }))
+                            .catch(err => res.json({ status: false, err }))
                     } else
-                        res.json({ status: false, message: 'wrong password' })
+                        res.json({ status: false, message: 'Entered wrong password' })
                 })
-                .catch(err => res.json({ status: false, message: 'Wrong password', error: err }))
+                .catch(err => res.json({ status: false, err }))
         })
-        .catch(err => res.json({ status: true, message: 'User not found', error: err }))
+        .catch(err => res.json({ status: false, err }))
 }
 
 controllers.forgotPassword = (req, res) => {
@@ -468,6 +468,7 @@ controllers.setForgotPassword = (req, res) => {
         })
         .catch(err => res.json({ status: false, message: 'reset link not found', error: err }))
 }
+
 
 // exporting module
 module.exports = controllers
