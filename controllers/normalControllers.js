@@ -5,15 +5,34 @@ const Library = require('../models/Archive')
 const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 
 /** */
+const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const axios = require('axios')
 const reqTokenDecoder = require('../utils/reqTokenDecoder')
 require('dotenv').config()
 
 let controllers = {}
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
+controllers.viewUsers = (req, res) => {
 
+    // getting search value from params
+    //const search = req.params.search
+
+    // filter object
+    let filter = {}
+
+    // Searching using filter   
+    User.find(filter)
+        .populate()
+        .exec()
+        .then(response => {
+            if (response)
+                res.json({ status: true, message: `Found user`, user: response })
+            else
+                res.json({ status: false, message: message, user: response })
+        })
+        .catch(err => res.json({ status: false, err }))
+}
 
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
 controllers.curriculum = (req, res) => {
@@ -120,13 +139,6 @@ controllers.archiveRecord = (req, res) => {
         .catch(err => res.json({ status: false, err }))
 }
 
-controllers.viewUsers = (req, res) => {
-
-    let user = {}
-
-
-}
-
 /**---------------------------------------------------Student controllers----------------------------------------------------*/
 controllers.curriculum = (req, res) => {
 
@@ -201,49 +213,12 @@ controllers.Profile = (req, res) => {
 
                 // exculding password before storing user info in profile
                 const { password, ...profile } = response._doc
-                res.json({ status: true, message: `Profile found`, profile: profile })
+                res.status(200).json({ status: true, message: `Profile found`, profile: profile })
             }
             else
                 res.json({ status: true, message: 'Profile not found' })
         })
         .catch(err => res.json({ status: false, message: 'Profile not found', error: err }))
-}
-
-controllers.viewUsers = (req, res) => {
-
-    // getting filter value from params
-    let user = req.params.role
-
-    // filter object
-    let filter = {}
-
-    // setting filter key & value
-    if (user.toUpperCase().trim() === 'ADMIN')
-        filter.role = 'ADMIN'
-
-    else if (user.toUpperCase().trim() === 'PROFESSOR')
-        filter.role = 'PROFESSOR'
-
-    else if (user.toUpperCase().trim() === 'LIBRARIAN')
-        filter.role = 'LIBRARIAN'
-
-    else if (user.toUpperCase().trim() === 'STUDENT')
-        filter.role = 'STUDENT'
-
-    // Searching using filter   
-    User.find(filter)
-        .populate()
-        .exec()
-        .then(response => {
-            if (response && response.length > 0)
-                res.json({ status: true, message: `Found user(s)`, user: response })
-
-            else {
-                message = `No user found`
-                res.json({ status: false, message: message, user: response })
-            }
-        })
-        .catch(err => res.json({ status: false, err }))
 }
 
 controllers.marksheet = (req, res) => {
