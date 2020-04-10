@@ -10,7 +10,7 @@ const { viewUsers, /** Admin controllers */
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, Profile)
-Router.get('/api/admin/view', Authenticate, viewUsers)
+Router.get('/api/admin/view/:user', Authenticate, viewUsers)
 Router.get('/api/admin/marksheet', Authenticate, marksheet)
 Router.get('/api/admin/calendar', Authenticate, calendar)
 

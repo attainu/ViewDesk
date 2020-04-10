@@ -16,10 +16,24 @@ let controllers = {}
 controllers.viewUsers = (req, res) => {
 
     // getting search value from params
-    //const search = req.params.search
+    const user = req.params.user.toUpperCase()
 
     // filter object
     let filter = {}
+
+    if (user === 'ALL') {}
+
+    else if (user === 'ADMIN')
+        filter.role = 'ADMIN'
+    
+    else if (user === 'PROFESSOR')
+    filter.role = 'PROFESSOR'
+
+    else if (user === 'LIBRARIAN')
+    filter.role = 'LIBRARIAN'
+
+    else if (user === 'STUDENT')
+    filter.role = 'STUDENT'
 
     // Searching using filter   
     User.find(filter)
@@ -27,7 +41,7 @@ controllers.viewUsers = (req, res) => {
         .exec()
         .then(response => {
             if (response)
-                res.json({ status: true, message: `Found user`, user: response })
+                res.json({ status: true, message: `Found user(s)`, user: response })
             else
                 res.json({ status: false, message: message, user: response })
         })

@@ -15,9 +15,12 @@ const { register, login, resetPassword, forgotPassword, setForgotPassword, editP
  * add REMOVE BOOK route to Librarian
  */
 
-/** Register & Login routes */
+/** Register*/
 Router.post('/api/register', register)
+
+/** common routes*/
 Router.post('/api/login', login)
+
 
 /** Admin routes */
 Router.post('/api/admin/adduser/:branch/:role', Authenticate, addUser)
@@ -41,7 +44,6 @@ Router.patch('/api/librarian/return/:book_id', Authenticate, returnBook)
 
 /** Student routes */
 Router.post('/api/student/markattendance', Authenticate, markAttendance)
-
 
 // exporting module
 module.exports = Router
