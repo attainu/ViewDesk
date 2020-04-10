@@ -52,14 +52,14 @@ controllers.register = (req, res) => {
 
 controllers.login = (req, res) => {
 
-    let Email = req.params.email
-    let pwd = req.params.password
+    // getting login details from request body
+    const { email, password } = req.body
 
     // finding user in DB
-    User.findOne({ email: Email })
+    User.findOne({ email: email })
         .then(user => {
             // comparing password
-            bcrypt.compare(pwd, user.password)
+            bcrypt.compare(password, user.password)
                 .then(result => {
                     if (result) {
 
@@ -344,7 +344,7 @@ controllers.editProfile = (req, res) => {
     // edit filters
     let filter = {}
 
-    
+
 
 }
 

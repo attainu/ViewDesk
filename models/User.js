@@ -3,13 +3,14 @@ const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
+    active: { type: Boolean, default: false },
     name: { type: String, required: [true, 'Name required'] },
-    email: { type: String, required: [true, 'Email required'], unique: true, trim: true },
-    username: { type: String, default: null, /*unique: true, trim: true*/ },
+    email: { type: String, trim: true, sparse: true, unique: true, required: [true, 'Email required'] },
+    username: { type: String, trim: true, sparse: true, unique: true, default: null },
     password: { type: String, required: [true, 'password required'] },
-    contact: { type: String, default: null, requird: [true, 'contact number required'], /*unique: true, trim: true*/ },
-    gender: { type: String, enum: ['MALE', 'FEMALE', 'OTHER'], required: [true, 'Gender required'] },
-    role: { type: String, required: [true, 'role required'], enum: ['ADMIN', 'PROFESSOR', 'LIBRARIAN', 'STUDENT'] },
+    contact: { type: String, trim: true, default: null, requird: [true, 'contact number required'], /*unique: true, trim: true*/ },
+    gender: { type: String, trim: true, enum: ['MALE', 'FEMALE', 'OTHER'], required: [true, 'Gender required'] },
+    role: { type: String, trim: true, required: [true, 'role required'], enum: ['ADMIN', 'PROFESSOR', 'LIBRARIAN', 'STUDENT'] },
     branch: { type: String, required: [true, 'branch required'], enum: ['ME', 'CE', 'EE', 'IT', 'CSE', 'ECE', 'EEE', 'NTS', 'ADMIN'] },
     profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
     createdAt: { type: Date, default: Date.now() }
@@ -40,7 +41,7 @@ UserSchema.pre('save', function (next) {
 const AdminSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
-    classrooms: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Classroom' }],
+    classrooms: [{ type: Schema.Types.ObjectId, unique: true, sparse: true, default: null, ref: 'Classroom' }],
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -48,8 +49,7 @@ const AdminSchema = new Schema({
 // Professor details
 const ProfessorSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
-
-    classrooms: [{ type: Schema.Types.ObjectId, unique: true, ref: 'Classroom' }],
+    classrooms: [{ type: Schema.Types.ObjectId, unique: true, sparse: true, default: null, ref: 'Classroom' }],
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
@@ -66,11 +66,11 @@ const LibrarianSchema = new Schema({
 const StudentSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
-    classrooms: { type: Schema.Types.ObjectId, ref: 'Classroom' },
+    classrooms: [{ type: Schema.Types.ObjectId, unique: true, sparse: true, default: null, ref: 'Classroom' }],
     marksheets: [{ type: Schema.Types.ObjectId, default: null, ref: 'Marksheet' }],
     parentInfo: {
-        email: { type: String },
-        contact: { type: Number }
+        email: { type: String, trim: true, },
+        contact: { type: String, trim: true, }
     },
     createdAt: { type: Date, default: Date.now() },
 },

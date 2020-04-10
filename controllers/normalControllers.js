@@ -200,7 +200,7 @@ controllers.Profile = (req, res) => {
             if (response) {
 
                 // exculding password before storing user info in profile
-                const { password, ...profile } = user
+                const { password, ...profile } = response._doc
                 res.json({ status: true, message: `Profile found`, profile: profile })
             }
             else

@@ -5,7 +5,6 @@ const apiRoutes = require('./routes/apiRoutes')
 const normalRoutes = require('./routes/normalRoutes')
 
 require('dotenv').config()
-console.log()
 
 const app = express()
 const port = process.env.PORT
