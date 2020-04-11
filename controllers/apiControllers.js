@@ -364,28 +364,24 @@ controllers.resetPassword = (req, res) => {
             // comparing password with hash
             bcrypt.compare(userPwd, doc.password)
                 .then(response => {
-                    if (response) {
 
-                        
+                    // hashing new password before updating
+                    const hashedPassword = bcrypt.hashSync(newPassword, 10);
 
-                        // updating password
-                        User.update({ _id: doc.id }, { $set: { password: newPassword } }, { new: true })
-                            .then(response => {
+                    // updating password
+                    User.update({ _id: doc.id }, { $set: { password: hashedPassword } }, { new: true })
+                        .then(response => {
 
-                                console.log(response)// testing
-
-                                if (response)
-                                    res.json({ status: true, message: 'Password updated successfully' })
-                                else
-                                    res.json({ status: false, message: 'Failed to update password' })
-                            })
-                            .catch(err => res.json({ status: false, message: 'Failed to update password', err }))
-                    } else
-                        res.json({ status: false, message: 'Entered wrong password' })
+                            if (response)
+                                res.json({ status: true, message: 'Password updated successfully' })
+                            else
+                                res.json({ status: false, message: 'Failed to update password' })
+                        })
+                        .catch(err => res.json({ status: false, message: 'Failed to update password', err }))
                 })
-                .catch(err => res.json({ status: false,  message: 'Entered wrong password', err }))
+                .catch(err => res.json({ status: false, message: 'Entered wrong password', err }))
         })
-        .catch(err => res.json({ status: false, err }))
+        .catch(err => res.json({ status: false, message: 'User not found', err }))
 }
 
 controllers.forgotPassword = (req, res) => {

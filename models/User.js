@@ -37,6 +37,7 @@ UserSchema.pre('save', function (next) {
     })
 })
 
+
 // Admin details
 const AdminSchema = new Schema({
     user: { type: Schema.Types.ObjectId, ref: 'User' },

@@ -21,7 +21,6 @@ Router.post('/api/register', register)
 /** common routes*/
 Router.post('/api/login', login)
 
-
 /** Admin routes */
 Router.post('/api/admin/adduser/:branch/:role', Authenticate, addUser)
 Router.delete('/api/admin/removeuser/:branch/:role', Authenticate, removeUser)
