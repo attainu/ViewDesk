@@ -1,9 +1,11 @@
 /** database modules */
 require('../models/DB')
-const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
+const { User, Admin, Professor, Librarian, Student } = require('../models/User')
 const Library = require('../models/Archive')
-const { AttendanceLink } = require('../models/Link')
+const { AttendanceLink, PasswordReset } = require('../models/Link')
 const { Curriculum, Result } = require('../models/Academic')
+
+const mongoose = require('mongoose') // testing
 
 /** packages & modules */
 const jwt = require('jsonwebtoken')
@@ -386,43 +388,51 @@ controllers.resetPassword = (req, res) => {
 
 controllers.forgotPassword = (req, res) => {
 
-    const userEmail = req.params.email
+    // getting email address entered by user
+    const userEmail = req.body.email
 
-    // getting request token
+    // getting request token from headers
     const data = reqTokenDecoder(req)
 
+    console.log(data.id) //testing
+
+    // finding user
     User.findById(data.id)
-        .then(doc => {
+        .then(user => {
 
             // comparing user email
-            if (doc.email == userEmail) {
+            if (user.email === userEmail) {
 
                 // user payload
-                let userInfo = {
-                    id: doc.id,
-                    email: doc.email,
-                    role: doc.role,
-                    branch: doc.branch
+                const userInfo = {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role,
+                    branch: user.branch
                 }
 
                 // generating password reset token & storing it in DB for further validation
                 const token = jwt.sign(userInfo, process.env.JWT_KEY, { expiresIn: '10m' })
-                let info = {
-                    userId: doc.id,
-                    token: token
-                }
 
+                // password reset link info
+                let info = { userId: user.id, token: token }
+
+                // storing reset token for further validation
                 let newToken = new PasswordReset(info)
                 newToken.save()
+                    .then(response => {
 
-                // password reset link
-                const resetLink = `/api/${doc.role}/resetPassword/:${token}`
-                // mail this link to registered email using nodemailer
+                        // password reset link
+                        const passwordResetLink = `localhost:${process.env.PORT}/api/resetPassword/:${token}/:${response._id}`
+                        // mail this link to registered email using nodemailer
 
 
-                /**----DELETE this code after setting nodemailer----*/
-                res.json({ status: true, message: 'Reset token generated', token: token })
-                //---------------------------------------------------
+                        //----DELETE this code after setting nodemailer----*/
+                        res.json({ status: true, message: 'Reset token generated', token_id: response._id, token: token, })
+                        //---------------------------------------------------
+                    })
+                    .catch(err => res.json({ status: false, message: 'unable to save link' }, err))
             }
             else
                 res.json({ status: false, message: 'Can not generate reset link. Enter registered email address' })
@@ -432,42 +442,47 @@ controllers.forgotPassword = (req, res) => {
 
 controllers.setForgotPassword = (req, res) => {
 
-    // getting new password
-    newPassword = req.params.password
+    // getting user input
+    const newPassword = req.body.newPassword
+    const resetToken = req.params.token
+    const token_id = req.params.id
 
     // getting request headers
     const data = reqTokenDecoder(req)
 
-    const token = req.params.token
+    // finding resetToken in DB
+    PasswordReset.findById(token_id)
+        .then(info => {
 
-    // finding token in DB
-    PasswordReset.findOne({ userId: data.id })
-        .then(doc => {
-            console.log(doc.token)
-            console.log(token)
-            // comparing the sent token with saved one
-            if (doc.token == token) {
+            // comparing the user reset link token and saved reset token
+            if (resetToken == info.token) {
 
-                // verfiying token validity
-                jwt.verify(token, process.env.JWT_KEY)
-                    .then(response => {
+                // verfiying reset token validity
+                console.log('jwt key', process.env.JWT_KEY)
+                jwt.verify(resetToken, process.env.JWT_KEY, (err, decoded) => {
 
-                        // finding user by id and updating password
-                        User.findByIdAndUpdate({ _id: response.id }, { $set: { password: newPassword } }, { new: true })
-                            .then(response => {
-                                if (response)
-                                    res.json({ status: true, message: 'password updated successfully' })
-                                else
-                                    res.json({ status: false, message: 'fail to update password' })
-                            })
-                            .catch(err => res.json({ status: false, message: 'Fail to update password', error: err }))
-                    })
-                    .catch(err => res.json({ status: false, message: 'reset link expired', error: err }))
+                    // checking for verfication errors
+                    if (err) res.json({ status: false, message: 'reset link malfunctioned or tempered', err })
+
+                    // hashing new password before updating
+                    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+
+                    // finding user by id and updating password
+                    User.update({ _id: data.id }, { $set: { password: hashedPassword } }, { new: true })
+                        .then(response => {
+
+                            if (response)
+                                res.json({ status: true, message: 'Password updated successfully' })
+                            else
+                                res.json({ status: false, message: 'Failed to update password' })
+                        })
+                        .catch(err => res.json({ status: false, message: 'Failed to update password', err }))
+                })
             }
-            else
-                res.json({ status: false, message: 'link tempered' })
+            else res.json({ status: false, message: 'Link is not same as sent' })
+
         })
-        .catch(err => res.json({ status: false, message: 'reset link not found', error: err }))
+    //.catch(err => res.json({ status: false, message: 'reset link not found', err }))
 }
 
 

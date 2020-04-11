@@ -26,7 +26,7 @@ Router.post('/api/admin/adduser/:branch/:role', Authenticate, addUser)
 Router.delete('/api/admin/removeuser/:branch/:role', Authenticate, removeUser)
 Router.post('/api/admin/resetpassword', Authenticate, resetPassword)
 Router.post('/api/admin/forgotpassword', Authenticate, forgotPassword)
-Router.post('/api/admin/setforgotpassword/:token', Authenticate, setForgotPassword)
+Router.post('/api/admin/forgotpassword/:token/:id', Authenticate, setForgotPassword)
 
 /** professor routes */
 Router.post('/api/professor/curriculum/add', Authenticate, addTopic)
