@@ -482,7 +482,7 @@ controllers.setForgotPassword = (req, res) => {
             else res.json({ status: false, message: 'Link is not same as sent' })
 
         })
-    //.catch(err => res.json({ status: false, message: 'reset link not found', err }))
+    .catch(err => res.json({ status: false, message: 'reset link not found', err }))
 }
 
 
