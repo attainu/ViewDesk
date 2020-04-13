@@ -8,6 +8,7 @@ const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const reqTokenDecoder = require('../utils/reqTokenDecoder')
+const { findAdmins, findProfessors, findLibrarians, findStudents } = require('../utils/findUser')
 require('dotenv').config()
 
 let controllers = {}
@@ -18,49 +19,32 @@ controllers.forwardMarksheet = (req, res) => {
     const std_id = req.params.std_id
 
     Student.findById(std_id)
-    .populate('Student', 'marksheets')
-    .exec()
-    .then( student => {
-        if (student) {
-            // need to setup the email to forward the marksheet
-        }
-    })
-    .catch()
+        .populate('Student', 'marksheets')
+        .exec()
+        .then(student => {
+            if (student) {
+                // need to setup the email to forward the marksheet
+            }
+        })
+        .catch()
 }
 
 controllers.viewUsers = (req, res) => {
 
     // getting search value from params
-    const user = req.params.user.toUpperCase()
+    const user = req.params.role.toUpperCase()
 
-    // filter object
-    let filter = {}
+    if (user === 'ADMIN')
+        findAdmins(res, req)
 
-    if (user === 'ALL') {}
-
-    else if (user === 'ADMIN')
-        filter.role = 'ADMIN'
-    
     else if (user === 'PROFESSOR')
-    filter.role = 'PROFESSOR'
+        findLibrarians(res, req)
 
     else if (user === 'LIBRARIAN')
-    filter.role = 'LIBRARIAN'
+        findLibrarians(res, req)
 
     else if (user === 'STUDENT')
-    filter.role = 'STUDENT'
-
-    // Searching using filter   
-    User.find(filter)
-        .populate()
-        .exec()
-        .then(response => {
-            if (response)
-                res.json({ status: true, message: `Found user(s)`, user: response })
-            else
-                res.json({ status: false, message: message, user: response })
-        })
-        .catch(err => res.json({ status: false, err }))
+        findStudents(res, req)
 }
 
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
@@ -84,17 +68,7 @@ controllers.students = (req, res) => {
     let user = reqTokenDecoder(req)
 
     // find students
-    User.find({ branch: user.branch, role: user.role })
-        .populate()
-        .exec()
-        .then(response => {
-            if (response)
-                res.json({ status: true, message: `All Students of ${user.branch} found`, students: result })
-            else
-                res.json({ status: false, message: 'Students not found' })
-
-        })
-        .catch(err => res.json({ status: false, err }))
+    findStudents(res, req)
 }
 
 controllers.professorForum = (req, res) => {
@@ -199,16 +173,25 @@ controllers.timetable = (req, res) => {
         .catch(err => res.josn({ status: false, message: 'Time table Not Found', error: err }))
 }
 
+controllers.studentMarksheet = (req, res) => {
+
+
+
+    Marksheet.find(query)
+        .then(marksheet => {
+            if (marksheet)
+                res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
+            else
+                res.json({ status: true, message: 'Marksheet Not found', })
+        })
+        .catch(err => res.json({ status: true, message: 'Marsheet', marksheet: marksheet }))
+}
+
 controllers.progress = (req, res) => {
     res.json('progress')
 }
 
 controllers.issuedBooks = (req, res) => {
-
-    /**
-     * to view issued books search in Archieve
-     * and look into the issuedTo field of each book
-     */
 
     // getting token from headers
     const data = reqTokenDecoder(req)
@@ -252,11 +235,14 @@ controllers.Profile = (req, res) => {
 
 controllers.marksheet = (req, res) => {
 
+    // getting request token from headers
+    const data = reqTokenDecoder(req)
+    
+    // setting filter for search
+    let filter = { userId: data.id }
 
-    let branch = req.params.branch
-    let email = req.query.email
-    let query = { branch: branch, email: email }
-    Marksheet.find(query)
+    // finding document
+    Marksheet.find(filter)
         .then(marksheet => {
             if (marksheet)
                 res.json({ status: true, message: 'Marksheet found', marksheet: marksheet })
@@ -269,7 +255,6 @@ controllers.marksheet = (req, res) => {
 controllers.calendar = (req, res) => {
     res.json('calender')
 }
-
 
 
 //exporting module

@@ -10,7 +10,8 @@ let mailer = async (mail) => {
             user: process.env.GMAIL,
             pass: process.env.GMAIL_PASS
         }
-    });
+    })
+
     // send mail with defined transport object
     let info = await transporter.sendMail(mail);
 
@@ -22,7 +23,7 @@ let mailer = async (mail) => {
 }
 
 // testing
- /*let Mail = {
+ let Mail = {
         from: 'View Desk', // sender address
         to: 'dhanesh.vishwakarma11@gmail.com', // list of receivers
         subject: 'TESTING', // Subject line
@@ -30,8 +31,8 @@ let mailer = async (mail) => {
         html: '<h3>Hello From View Desk</h3>'      
     }
 
-mailer(Mail)
-*/
+//console.log(mailer(Mail))
+
 
 // exporting module
 module.exports = mailer

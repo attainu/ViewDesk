@@ -6,7 +6,7 @@ const UserSchema = new Schema({
     active: { type: Boolean, default: false },
     name: { type: String, required: [true, 'Name required'] },
     email: { type: String, trim: true, sparse: true, unique: true, required: [true, 'Email required'] },
-    username: { type: String, trim: true, sparse: true, unique: true, default: null },
+    username: { type: String, trim: true, /*sparse: true, unique: true,*/ default: null },
     password: { type: String, required: [true, 'password required'] },
     contact: { type: String, trim: true, default: null, requird: [true, 'contact number required'], /*unique: true, trim: true*/ },
     gender: { type: String, trim: true, enum: ['MALE', 'FEMALE', 'OTHER'], required: [true, 'Gender required'] },
@@ -37,38 +37,34 @@ UserSchema.pre('save', function (next) {
     })
 })
 
-
 // Admin details
 const AdminSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
-    classrooms: [{ type: Schema.Types.ObjectId, unique: true, sparse: true, default: null, ref: 'Classroom' }],
+    user: { type: Schema.Types.ObjectId, required: [ true, 'user _id required'], ref: 'User' },
+    classrooms: [{ type: Schema.Types.ObjectId, /*unique: true, sparse: true,*/ ref: 'Classroom' }],
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
 
 // Professor details
 const ProfessorSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    classrooms: [{ type: Schema.Types.ObjectId, unique: true, sparse: true, default: null, ref: 'Classroom' }],
+    user: { type: Schema.Types.ObjectId, required: [ true, 'user _id required'], ref: 'User' },
+    classrooms: [{ type: Schema.Types.ObjectId, /*unique: true, sparse: true,*/ ref: 'Classroom' }],
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
 
 // Librarian details
 const LibrarianSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
+    user: { type: Schema.Types.ObjectId, required: [ true, 'user _id required'], ref: 'User' },
     createdAt: { type: Date, default: Date.now() }
 },
     { timestamps: true })
 
 // Student details
 const StudentSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
-    profile_picture: { type: String, default: null }, // <= add some defalut pic like slack have
-    classrooms: [{ type: Schema.Types.ObjectId, unique: true, sparse: true, default: null, ref: 'Classroom' }],
-    marksheets: [{ type: Schema.Types.ObjectId, default: null, ref: 'Marksheet' }],
+    user: { type: Schema.Types.ObjectId, required: [ true, 'user _id required'], ref: 'User' },
+    classrooms: [{ type: Schema.Types.ObjectId, /*unique: true, sparse: true,*/ ref: 'Classroom' }],
+    marksheets: [{ type: Schema.Types.ObjectId, /*unique: true, sparse: true,*/ ref: 'Marksheet' }],
     parentInfo: {
         email: { type: String, trim: true, },
         contact: { type: String, trim: true, }
@@ -84,7 +80,12 @@ let Professor = mongoose.model('Professor', ProfessorSchema)
 let Librarian = mongoose.model('Librarian', LibrarianSchema)
 let Student = mongoose.model('Student', StudentSchema)
 
+
 User.syncIndexes()
+Admin.syncIndexes()
+Professor.syncIndexes()
+Librarian.syncIndexes()
+Student.syncIndexes()
 
 
 // module export

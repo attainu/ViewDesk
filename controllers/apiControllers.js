@@ -2,16 +2,15 @@
 require('../models/DB')
 const { User, Admin, Professor, Librarian, Student } = require('../models/User')
 const Library = require('../models/Archive')
-const { AttendanceLink, PasswordReset } = require('../models/Link')
+const { AttendanceLink, PasswordReset, UserConfirm } = require('../models/Link')
 const { Curriculum, Result } = require('../models/Academic')
-
-const mongoose = require('mongoose') // testing
 
 /** packages & modules */
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const reqTokenDecoder = require('../utils/reqTokenDecoder')
 const mailer = require('../utils/mailer')
+const saveUser = require('../utils/saveUser')
 
 require('dotenv').config('../.env')
 
@@ -21,51 +20,69 @@ let controllers = {}
 controllers.register = (req, res) => {
 
     // getting user details from requrest params
-    const user = req.body
+    const admin = req.body
+
+    // validating Admin PIN
+    if (admin.pin != process.env.PIN) return res.json({ status: false, message: 'Invalid PIN' })
 
     // user object
     let userObj = {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        contact: user.contact,
-        gender: user.gender,
-        role: user.role.toUpperCase(),
-        branch: user.branch.toUpperCase()
+        name: admin.name,
+        email: admin.email,
+        password: admin.password,
+        contact: admin.contact,
+        gender: admin.gender,
+        role: admin.role.toUpperCase(),
+        branch: admin.branch.toUpperCase()
     }
 
     // adding user to DB
     let newUser = new User(userObj)
     newUser.save()
-        .then(credentials => {
+        .then(docs => {
 
-            /** IMPORTANT NOTE
-             * send LOGIN credentials on registered EMAIL address
-             * after user sucessfull registration
-             */
+            
 
-            if (credentials)
-                res.json({ status: true, message: 'Registration Successfull' })
-            else
-                res.json({ status: false, message: 'Registration Failed' })
+            // collecting some keys from docs
+            const { _id: id, role } = docs
+
+            /** user specified information */
+            if (role == 'ADMIN')
+                saveUser(res, docs)
+
+            else if (role == 'PROFESSOR')
+                saveUser(res, docs)
+
+            else if (role == 'LIBRARIAN')
+                saveUser(res, docs)
+
+            else if (role == 'STUDENT')
+                saveUser(res, docs)
         })
-        .catch(err => res.json({ status: false, message: 'Registration Failed', Error: `${err}` }))
+        .catch(err => res.json({ status: false, message: 'Registration Failed', err }))
 }
 
 controllers.login = (req, res) => {
 
     // getting login details from request body
-    const { email, password } = req.body
+    const email = req.body.email
+    const password = req.body.password
 
     // finding user in DB
     User.findOne({ email: email })
         .then(user => {
+
+            // checking for Activation
+            //if (user.active === false) return res.json({ status: false, message: 'Activation required!' })
+
             // comparing password
             bcrypt.compare(password, user.password)
                 .then(result => {
+
+                    console.log(result)
                     if (result) {
 
-                        // payload
+                        // user payload
                         const payload = {
                             id: user._id,
                             name: user.name,
@@ -77,13 +94,13 @@ controllers.login = (req, res) => {
                         // generating token
                         const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: '24h' })
 
-                        res.json({ status: true, message: 'Login Successfull', user: user.role, token: token })
+                        res.status(200).json({ status: true, message: 'Login Successfull', user: user.role, token: token })
                     }
                     else
                         res.json({ status: false, message: 'Invalid Credentials' })
                 })
         })
-        .catch(err => res.json({ status: false, message: `User Not Found. Register first!`, Error: `${err}` }))
+    //.catch(err => res.json({ status: false, message: `User Not Found. Register first!`, Error: `${err}` }))
 }
 
 
@@ -126,20 +143,26 @@ controllers.addUser = (req, res) => {
 
 controllers.removeUser = (req, res) => {
     res.json('remove user')
-    /**
-        // getting user type from params
-        const params = req.params
-    
-        // getting user details from request params
-        const user = req.params
-    
-        // find & deleting user
-        User.findByIdAndDelete(user._id, (err, response) => {
-    
-            if (err) return res.json({ status: false, err })
-            if (response) return res.json({ status: true, message: 'User Removed Successfully' })
+
+}
+
+controllers.setUserStatus = (req, res) => {
+
+    // getting user status detail
+    const { userId, status } = req.params
+
+    // changing user active status
+    User.findByIdAndUpdate(userId, { $set: { avtive: status } }, { new: true })
+        .populate()
+        .exec()
+        .then(response => {
+
+            if (response)
+                res.json({ status: true, message: 'User status changed successfully' })
+            else
+                res.json({ status: false, message: 'Fail to change user status' })
         })
-    */
+        .catch(err => res.json({ status: false, err }))
 }
 
 
@@ -288,7 +311,6 @@ controllers.returnBook = (req, res) => {
 
 
 /**---------------------------------------------------Student controllers----------------------------------------------------*/
-/** need to be done */
 controllers.markAttendance = (req, res) => {
     res.json('Mark Attendance')
     /**
@@ -324,6 +346,15 @@ controllers.markAttendance = (req, res) => {
 
 
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
+controllers.userConfirm = (req, res) => {
+
+    // collecting confirmation token
+    const token = req.params.token
+
+
+
+}
+
 controllers.editProfile = (req, res) => {
 
     // getting user data from request headers
@@ -482,7 +513,7 @@ controllers.setForgotPassword = (req, res) => {
             else res.json({ status: false, message: 'Link is not same as sent' })
 
         })
-    .catch(err => res.json({ status: false, message: 'reset link not found', err }))
+        .catch(err => res.json({ status: false, message: 'reset link not found', err }))
 }
 
 
