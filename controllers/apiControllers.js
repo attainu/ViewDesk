@@ -93,14 +93,14 @@ controllers.login = (req, res) => {
                         res.json({ status: false, message: 'Invalid Credentials' })
                 })
         })
-    .catch(err => res.json({ status: false, message: `User Not Found. Register first!`, Error: `${err}` }))
+        .catch(err => res.json({ status: false, message: `User Not Found. Register first!`, Error: `${err}` }))
 }
 
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
 controllers.register = (req, res) => {
 
-    // getting user details from requrest params
+    // getting user details from request body
     const user = req.body
 
     // adding user to DB
@@ -138,7 +138,19 @@ controllers.register = (req, res) => {
 }
 
 controllers.removeUser = (req, res) => {
-    res.json('remove user')
+
+    // getting user Id from params
+    const userId = req.params.id
+
+    User.findByIdAndDelete(userId)
+        .then(response => {
+
+            if (response)
+                res.json({ status: true, message: 'user removed' })
+            else
+                res.json({ status: false, message: 'Fail to remove user' })
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
 controllers.setUserStatus = (req, res) => {
@@ -428,10 +440,11 @@ controllers.forgotPassword = (req, res) => {
                 newToken.save()
                     .then(response => {
 
-                        // password reset link
-                        const passwordResetLink = `localhost:${process.env.PORT}/api/resetPassword/:${token}/:${response._id}`
-                        // mail this link to registered email using nodemailer
+                        // data to be sent to user
+                        const data = { userId: response._id }
 
+                        // mailer
+                        mailer('forgotPassword', data)
 
                         //----DELETE this code after setting nodemailer----*/
                         res.json({ status: true, message: 'Reset token generated', token_id: response._id, token: token, })

@@ -1,6 +1,6 @@
 /** required modules */
 require('../models/DB')
-const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
+const { Admin, Professor, Librarian, Student, PasswordReset } = require('../models/User')
 
 const users = {}
 

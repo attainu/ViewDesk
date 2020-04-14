@@ -32,7 +32,7 @@ Router.patch('/api/admin/:userId/:status', Authenticate, setUserStatus)
 Router.patch('/api/admin/resetpassword', Authenticate, resetPassword)
 Router.post('/api/admin/forgotpassword', Authenticate, forgotPassword)
 Router.patch('/api/admin/forgotpassword/:token/:id', Authenticate, setForgotPassword)
-Router.delete('/api/admin/removeuser/:id', Authenticate, removeUser) // <= need to fix it
+Router.delete('/api/admin/removeuser/:id', Authenticate, removeUser)
 
 
 /** professor routes */

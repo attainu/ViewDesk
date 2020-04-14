@@ -4,9 +4,7 @@ const { User, Admin, Professor, Librarian, Student, PasswordReset } = require('.
 const Library = require('../models/Archive')
 const { Curriculum, Marksheet, Timetable } = require('../models/Academic')
 
-/** */
-const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
+
 const reqTokenDecoder = require('../utils/reqTokenDecoder')
 const { findAdmins, findProfessors, findLibrarians, findStudents } = require('../utils/findUser')
 require('dotenv').config()
@@ -17,13 +15,13 @@ let controllers = {}
 controllers.viewUsers = (req, res) => {
 
     // getting search value from params
-    const user = req.params.user.toUpperCase()
+    const user = req.params.role.toUpperCase()
 
     if (user === 'ADMIN')
         findAdmins(res, req)
 
     else if (user === 'PROFESSOR')
-        findLibrarians(res, req)
+        findProfessors(res, req)
 
     else if (user === 'LIBRARIAN')
         findLibrarians(res, req)
@@ -89,33 +87,22 @@ controllers.searchBooks = (req, res) => {
         .catch(err => res.json({ status: false, err }))
 }
 
-controllers.searchBooks = (req, res) => {
-
-
-    let search = {}
-    if (req.params !== undefined) {
-
-
-    }
-
-}
-
 controllers.archiveRecord = (req, res) => {
+
+     // getting params value
+     const view = req.params.view
 
     // filter for searching in DB
     let filter = {}
     let message = ``
 
-    // getting params
-    const view = req.params.view
-
-    /** setting filter according to params value */
-    if (view.toLowerCase().trim() === 'issued') {
+    /** setting filter key: value according to params */
+    if (view.toUpperCase().trim() === 'ISSUED') {
         filter.issued = true
         message = `Issued Books`
     }
 
-    else if (view.toLowerCase().trim() === 'available') {
+    else if (view.toUpperCase().trim() === 'AVAILABLE') {
         filter.issued = false
         message = `Available Books`
     }

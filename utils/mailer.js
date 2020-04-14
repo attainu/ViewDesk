@@ -18,21 +18,23 @@ let mailer = async (mode, data) => {
     // mail variables
     const subject = ` `
     const message = ` `
+    const html = ` `
 
     // mailing modes
     if (mode === 'login') {
 
         subject = `login Creadentials`
-        message = `
-        User activation Link: localhost:8080/api/confirm/:${data.id}\n
-        email: ${data.email} password: ${data.password}`
+        message = `email: ${data.email} password: ${data.password}`
+        html = `<h3>User activation Link:</h3>
+                <a href="localhost:${process.env.PORT}/api/confirm/:${data.id}">Activation link</a>`
     }
 
-    else if (mode === 'forgot') {
+    else if (mode === 'forgotPassword') {
 
         subject = `Forgot Password`
-        message = `
-        Click on this link to set your forgot password: ${data}`
+        message = `Click on this link to set your forgot password`
+        html = `Forgot password link:
+                localhost:${process.env.PORT}/api/resetPassword/:${token}/:${response._id}`
     }
 
     // sending mail
