@@ -1,8 +1,8 @@
 const Router = require('express').Router()
 const Authenticate = require('../middlewares/authenticate')
 
-const { register, 
-        addUser, removeUser, setUserStatus, /** Admin functions*/
+const { adminRegister,
+        register, addUser, removeUser, setUserStatus, /** Admin functions*/
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
         addBook, removeBook, issueBook, returnBook,/** Librarian functions*/
         markAttendance, /** Student functions */ 
@@ -18,19 +18,22 @@ const { register,
  */
 
 /** Admin Register*/
-Router.post('/api/register', register)
+Router.post('/api/register', adminRegister)
+
 
 /** common routes*/
 Router.post('/api/login', login)
-Router.post('/api/confirm/:token', userConfirm)
+Router.post('/api/confirm/:user', userConfirm)
+
 
 /** Admin routes */
-Router.post('/api/admin/adduser/:branch/:role', Authenticate, addUser)
+Router.post('/api/admin/register', Authenticate, register)
 Router.patch('/api/admin/:userId/:status', Authenticate, setUserStatus)
 Router.patch('/api/admin/resetpassword', Authenticate, resetPassword)
 Router.post('/api/admin/forgotpassword', Authenticate, forgotPassword)
 Router.patch('/api/admin/forgotpassword/:token/:id', Authenticate, setForgotPassword)
 Router.delete('/api/admin/removeuser/:id', Authenticate, removeUser) // <= need to fix it
+
 
 /** professor routes */
 Router.post('/api/professor/curriculum/add', Authenticate, addTopic)
@@ -50,11 +53,12 @@ Router.patch('/api/librarian/resetpassword', Authenticate, resetPassword)
 Router.post('/api/librarian/forgotpassword', Authenticate, forgotPassword)
 Router.patch('/api/librarian/forgotpassword/:token/:id', Authenticate, setForgotPassword)
 
+
 /** Student routes */
 Router.patch('/api/student/resetpassword', Authenticate, resetPassword)
 Router.post('/api/student/forgotpassword', Authenticate, forgotPassword)
 Router.patch('/api/student/forgotpassword/:token/:id', Authenticate, setForgotPassword)
-//Router.post('/api/student/markattendance', Authenticate, markAttendance)
+
 
 // exporting module
 module.exports = Router

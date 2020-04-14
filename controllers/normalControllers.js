@@ -14,25 +14,10 @@ require('dotenv').config()
 let controllers = {}
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
-controllers.forwardMarksheet = (req, res) => {
-
-    const std_id = req.params.std_id
-
-    Student.findById(std_id)
-        .populate('Student', 'marksheets')
-        .exec()
-        .then(student => {
-            if (student) {
-                // need to setup the email to forward the marksheet
-            }
-        })
-        .catch()
-}
-
 controllers.viewUsers = (req, res) => {
 
     // getting search value from params
-    const user = req.params.role.toUpperCase()
+    const user = req.params.user.toUpperCase()
 
     if (user === 'ADMIN')
         findAdmins(res, req)
@@ -47,6 +32,20 @@ controllers.viewUsers = (req, res) => {
         findStudents(res, req)
 }
 
+controllers.forwardMarksheet = (req, res) => {
+
+    const std_id = req.params.std_id
+
+    Student.findById(std_id)
+        .populate('Student', 'marksheets')
+        .exec()
+        .then(student => {
+            if (student) {
+                // need to setup the email to forward the marksheet
+            }
+        })
+        .catch()
+}
 /**---------------------------------------------------Professor controllers----------------------------------------------------*/
 controllers.curriculum = (req, res) => {
 

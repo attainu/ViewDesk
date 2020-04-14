@@ -16,15 +16,7 @@ const PasswordResetSchema = new Schema({
 },
     { timestamps: true })
 
-const UserConfirmSchema = new Schema({
-    userId: { type: String, required: [true, 'userId required'] },
-    token: { type: String, required: [true, 'password token required'] },
-    date: { type: Date, default: Date.now() }
-},
-    { timestamps: true })
-
 let AttendanceLink = mongoose.model('AttendanceLink', AttendanceLinkSchema)
 let PasswordReset = mongoose.model('PasswordRest', PasswordResetSchema)
-let UserConfirm = mongoose.model('UserConfirm', UserConfirmSchema)
 
-module.exports = { AttendanceLink, PasswordReset, UserConfirm }
+module.exports = { AttendanceLink, PasswordReset }

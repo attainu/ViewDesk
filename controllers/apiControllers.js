@@ -2,7 +2,7 @@
 require('../models/DB')
 const { User, Admin, Professor, Librarian, Student } = require('../models/User')
 const Library = require('../models/Archive')
-const { AttendanceLink, PasswordReset, UserConfirm } = require('../models/Link')
+const { AttendanceLink, PasswordReset } = require('../models/Link')
 const { Curriculum, Result } = require('../models/Academic')
 
 /** packages & modules */
@@ -17,47 +17,40 @@ require('dotenv').config('../.env')
 let controllers = {}
 
 /**---------------------------------------------------Register & Login controllers----------------------------------------------------*/
-controllers.register = (req, res) => {
+controllers.adminRegister = (req, res) => {
 
     // getting user details from requrest params
-    const admin = req.body
+    const user = req.body
 
     // validating Admin PIN
-    if (admin.pin != process.env.PIN) return res.json({ status: false, message: 'Invalid PIN' })
+    if (user.pin != process.env.PIN) return res.json({ status: false, message: 'Invalid PIN' })
 
     // user object
     let userObj = {
-        name: admin.name,
-        email: admin.email,
-        password: admin.password,
-        contact: admin.contact,
-        gender: admin.gender,
-        role: admin.role.toUpperCase(),
-        branch: admin.branch.toUpperCase()
+        active: true,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+        contact: user.contact,
+        gender: user.gender,
+        role: 'ADMIN',
+        branch: 'ADMIN'
     }
 
     // adding user to DB
     let newUser = new User(userObj)
     newUser.save()
-        .then(docs => {
+        .then(user => {
 
-            
+            let newAdmin = new Admin({ user: user.id })
+            newAdmin.save()
+                .then(info => {
 
-            // collecting some keys from docs
-            const { _id: id, role } = docs
-
-            /** user specified information */
-            if (role == 'ADMIN')
-                saveUser(res, docs)
-
-            else if (role == 'PROFESSOR')
-                saveUser(res, docs)
-
-            else if (role == 'LIBRARIAN')
-                saveUser(res, docs)
-
-            else if (role == 'STUDENT')
-                saveUser(res, docs)
+                    if (info)
+                        res.status(200).json({ status: true, message: 'Registration Successfull' })
+                    else
+                        res.json({ status: false, message: 'Registration Failed' })
+                })
         })
         .catch(err => res.json({ status: false, message: 'Registration Failed', err }))
 }
@@ -73,7 +66,7 @@ controllers.login = (req, res) => {
         .then(user => {
 
             // checking for Activation
-            //if (user.active === false) return res.json({ status: false, message: 'Activation required!' })
+            if (user.active === false) return res.json({ status: false, message: 'Activation required!' })
 
             // comparing password
             bcrypt.compare(password, user.password)
@@ -100,50 +93,52 @@ controllers.login = (req, res) => {
                         res.json({ status: false, message: 'Invalid Credentials' })
                 })
         })
-    //.catch(err => res.json({ status: false, message: `User Not Found. Register first!`, Error: `${err}` }))
+    .catch(err => res.json({ status: false, message: `User Not Found. Register first!`, Error: `${err}` }))
 }
 
 
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
-controllers.addUser = (req, res) => {
+controllers.register = (req, res) => {
 
-    // getting user type from params
-    const params = req.params
-
-    // getting user details from request body
+    // getting user details from requrest params
     const user = req.body
 
-    // user credentials & details
-    let userObj = {
-        name: user.name,
-        email: user.email,
-        password: user.password,
-        contact: user.contact,
-        role: params.role.toUpperCase(),
-        branch: params.branch.toUpperCase()
-    }
-
-    // saving user in DB
-    let newUser = new User(userObj)
+    // adding user to DB
+    let newUser = new User(user)
     newUser.save()
-        .then(response => {
+        .then(docs => {
 
-            /** IMPORTANT NOTE
-             * send LOGIN credentials on registered EMAIL address
-             * after user sucessfull registration
-             */
-            if (response)
-                res.json({ status: true, message: 'Registration successfull & Credentials sent to registered Email addresss' })
-            else
+            // registered user documents
+            const { _id: id, role } = docs
 
-                res.json({ status: false, message: 'Registration failed' })
+            // mailing data
+            const data = {
+                userId: id,
+                email: user.email,
+                password: user.password
+            }
+
+            // mailing login credentials with user activation link
+            mailer('login', user.email, data)
+
+            /** user specified information */
+            if (role == 'ADMIN')
+                saveUser(res, docs)
+
+            else if (role == 'PROFESSOR')
+                saveUser(res, docs)
+
+            else if (role == 'LIBRARIAN')
+                saveUser(res, docs)
+
+            else if (role == 'STUDENT')
+                saveUser(res, docs)
         })
-        .catch(err => res.json({ status: false, err }))
+        .catch(err => res.json({ status: false, message: 'Registration Failed', err }))
 }
 
 controllers.removeUser = (req, res) => {
     res.json('remove user')
-
 }
 
 controllers.setUserStatus = (req, res) => {
@@ -152,7 +147,7 @@ controllers.setUserStatus = (req, res) => {
     const { userId, status } = req.params
 
     // changing user active status
-    User.findByIdAndUpdate(userId, { $set: { avtive: status } }, { new: true })
+    User.findByIdAndUpdate(userId, { $set: { active: status } }, { new: true })
         .populate()
         .exec()
         .then(response => {
@@ -204,28 +199,7 @@ controllers.removeTopic = (req, res) => {
 }
 
 controllers.createMarksheet = (req, res) => {
-
-    /**let marksheet = req.params
-
-    let newMarsheet = new Result(marksheet)
-    newMarsheet.save()
-        .then(response => {
-            if (response)
-                res.json({ status: true, message: 'Marksheet added successfully' })
-            else
-                res.json({ status: false, message: 'Fail to add Marsheet' })
-        })
-        .catch(err => res.json({ status: false, err }))*/
-
-
-    const { stdId: _id, grade, marks } = req.params
-
-    User.findOne({ _id }, async (error, user) => {
-
-        console.log(user)
-        //user.author = author;
-        //console.log(story.author.name); // prints "Ian Fleming"
-    });
+    res.json('Create marksheet')
 }
 
 controllers.addEvent = (req, res) => {
