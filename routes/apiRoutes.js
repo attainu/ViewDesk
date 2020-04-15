@@ -6,16 +6,8 @@ const { adminRegister,
         addEvent, createMarksheet, generateAttendance, addTopic, removeTopic, /** professor functions */
         addBook, removeBook, issueBook, returnBook,/** Librarian functions*/
         markAttendance, /** Student functions */ 
-        login, userConfirm, resetPassword, forgotPassword, setForgotPassword, editProfile, /** common functions */ } = require('../controllers/apiControllers')
-/**
- *      ADMIN FEATURE:
- * 1) Activate & Deactivate user
- * 2) Enqueue & Dequeue users from Classroom
- * 
- *      SETUP NODEMAILER
- * 1) Registertion & Confirmation of user
- * 2) RESET & FORGOT password
- */
+        login, Activation, resetPassword, forgotPassword, setForgotPassword, editProfile, /** common functions */ } = require('../controllers/apiControllers')
+        
 
 /** Admin Register*/
 Router.post('/api/register', adminRegister)
@@ -23,7 +15,7 @@ Router.post('/api/register', adminRegister)
 
 /** common routes*/
 Router.post('/api/login', login)
-Router.post('/api/confirm/:user', userConfirm)
+Router.post('/api/confirm/:userId', Activation)
 
 
 /** Admin routes */

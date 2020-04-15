@@ -332,13 +332,21 @@ controllers.markAttendance = (req, res) => {
 
 
 /**---------------------------------------------------Common controllers----------------------------------------------------*/
-controllers.userConfirm = (req, res) => {
+controllers.Activation = (req, res) => {
 
-    // collecting confirmation token
-    const token = req.params.token
+    // getting userId from params
+    const userId = req.params.userId
 
+    // finding user in DB
+    User.findByIdAndUpdate(userId, { $set: { active: true } }, { new: true })
+        .then(response => {
 
-
+            if (response)
+                res.json({ status: true, message: 'User Activated' })
+            else
+                res.json({ status: false, message: 'Fail to Activate user' })
+        })
+        .catch(err => res.json({ status: false, err }))
 }
 
 controllers.editProfile = (req, res) => {
