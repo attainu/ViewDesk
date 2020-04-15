@@ -7,8 +7,6 @@ const { viewUsers, /** Admin controllers */
         searchBooks,timetable, studentMarksheet, progress, issuedBooks, studentForum, /**  Student controllers */
         Profile, marksheet, curriculum, archiveRecord, calendar /** Common controllers */ } = require('../controllers/normalControllers')
 
-/**home */
-Router.get('/', Home)
 
 /** Admin routes */
 Router.get('/api/admin/profile', Authenticate, Profile)

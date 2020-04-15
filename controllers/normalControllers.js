@@ -11,10 +11,6 @@ require('dotenv').config()
 
 let controllers = {}
 
-controllers.Home = (req, res) => {
-    res.josn('Home')
-}
-
 /**---------------------------------------------------Admin controllers----------------------------------------------------*/
 controllers.viewUsers = (req, res) => {
 
