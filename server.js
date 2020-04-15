@@ -16,4 +16,4 @@ app.use(express.urlencoded({extended: false}))
 app.use(apiRoutes)
 app.use(normalRoutes)
 
-app.listen(port, () => console.log(`Server: listening...`))
+app.listen(port, () => console.log(`Server: listening... on PORT ${port}`))
