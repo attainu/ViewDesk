@@ -26,7 +26,7 @@ let mailer = async (mode, data) => {
         subject = `login Creadentials`
         message = `email: ${data.email} password: ${data.password}`
         html = `<h3>User activation Link:</h3>
-                <a https://viewdesk.herokuapp.com/api/confirm/:${data.id}">Activation link</a>`
+                <a https://view-desk.herokuapp.com/api/confirm/:${data.id}">Activation link</a>`
     }
 
     else if (mode === 'forgotPassword') {
@@ -34,7 +34,7 @@ let mailer = async (mode, data) => {
         subject = `Forgot Password`
         message = `Click on this link to set your forgot password`
         html = `Forgot password link:
-        https://viewdesk.herokuapp.com/api/resetPassword/:${token}/:${response._id}`
+        https://view-desk.herokuapp.com/api/resetPassword/:${token}/:${response._id}`
     }
 
     // sending mail
